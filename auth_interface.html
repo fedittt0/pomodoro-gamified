@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro - Login y Registro</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <nav role="navigation" aria-label="Primary Navigation" class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo" aria-label="Homepage logo placeholder">Pomodoro</a>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="main-content"> <div class="auth-container">
+                <h2>Crear Usuario</h2>
+                <input type="text" id="register-username" placeholder="Nombre de usuario">
+                <input type="password" id="register-password" placeholder="Contraseña">
+                <button onclick="registrarUsuario()">Registrarse</button>
+
+                <h2>Iniciar Sesión</h2>
+                <input type="text" id="login-username" placeholder="Nombre de usuario">
+                <input type="password" id="login-password" placeholder="Contraseña">
+                <button onclick="loginUsuario()">Iniciar Sesión</button>
+
+                <p id="auth-message"></p>
+            </div>
+        </div>
+    </div> <script>
+        function registrarUsuario() {
+            const nombre = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+
+            if (!nombre || !password) {
+                document.getElementById('auth-message').textContent = 'Por favor, completá todos los campos.';
+                return;
+            }
+
+            fetch('http://localhost:3000/api/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('auth-message').textContent = data.mensaje;
+            })
+            .catch(error => {
+                document.getElementById('auth-message').textContent = 'Error al registrar.';
+                console.error('Error:', error);
+            });
+        }
+
+        function loginUsuario() {
+            const nombre = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!nombre || !password) {
+                document.getElementById('auth-message').textContent = 'Por favor, completá todos los campos.';
+                return;
+            }
+
+            fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, password })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Credenciales incorrectas');
+                }
+            })
+            .then(data => {
+                document.getElementById('auth-message').textContent = data.mensaje;
+                localStorage.setItem('usuario', nombre);
+                localStorage.setItem('userId', data.userId); // <--- THIS LINE IS CRITICAL
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            })
+            .catch(error => {
+                document.getElementById('auth-message').textContent = error.message;
+                console.error('Error:', error);
+            });
+        }  
+        
+        // Mostrar el nombre del usuario en el menú si está logueado
+        document.addEventListener('DOMContentLoaded', () => {
+            const usuario = localStorage.getItem('usuario');
+            if (usuario) {
+                const nav = document.querySelector('.nav-container ul');
+                const userItem = document.createElement('li');
+                userItem.innerHTML = `<span style="font-weight: 600;">Hola, ${usuario}!</span> <a href="#" onclick="logoutUsuario()">Salir</a>`;
+                nav.appendChild(userItem);
+            }
+        });
+
+        function logoutUsuario() {
+            localStorage.removeItem('usuario');
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>

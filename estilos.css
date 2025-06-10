@@ -1,0 +1,451 @@
+/* estilos.css */
+
+/* Import modern font Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+:root {
+  --color-bg: #ffffff;
+  --color-text-primary: #111827; /* Darker accent for headings */
+  --color-text-secondary: #6b7280; /* Neutral gray */
+  --color-accent: #ef4444; /* Pomodoro red */
+  --color-accent-hover: #dc2626;
+  --color-input-bg: #f9fafb;
+  --border-radius: 1.5rem; /* MODIFICATION: Increased border-radius for more rounded corners */
+  --shadow-light: 0 1px 6px rgba(0, 0, 0, 0.1);
+  --transition-speed: 0.3s;
+  --font-family: 'Poppins', sans-serif;
+}
+
+/* Reset and base styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  font-family: var(--font-family);
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* ===========================
+   NAVIGATION BAR
+   =========================== */
+nav.nav {
+  position: sticky; /* Key property for sticky behavior */
+  top: 0; /* Sticks to the top of the viewport */
+  left: 0;
+  width: 100%; /* Make it span the full width of the viewport */
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-light);
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 1000; /* Ensures it stays on top of other content */
+  padding: 1rem 0; /* Vertical padding for the nav bar itself. Horizontal padding will be on .nav-container */
+  user-select: none;
+}
+
+nav .nav-container {
+  max-width: 1200px; /* Constrain content width within the nav */
+  margin: 0 auto; /* Center the content within the nav */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem; /* Add horizontal padding to the inner container */
+  border-radius: var(--border-radius);
+}
+
+nav .logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius);
+  user-select: none;
+}
+
+nav .logo:hover,
+nav .logo:focus {
+  color: var(--color-accent-hover);
+  background-color: var(--color-input-bg);
+  outline: none;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+nav .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1.5rem; /* Space between menu items */
+}
+
+nav .menu li a {
+    text-decoration: none;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+nav .menu li a:hover,
+nav .menu li a:focus {
+    background-color: var(--color-input-bg);
+    color: var(--color-text-primary);
+    outline: none;
+}
+
+/* ===========================
+   GREETING CONTAINER
+   =========================== */
+.greeting-container {
+  text-align: left; /* Aligned to the left */
+  max-width: 720px; /* MODIFICATION: Increased width */
+  margin: 1.5rem auto 1.5rem; /* Centers the container and provides top margin */
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #4b5563; /* A little lighter than primary, but still prominent */
+  padding: 1.5rem 2rem; /* Adjusted padding for better visual appearance with background/shadow */
+  background-color: var(--color-input-bg); /* Added background for shadow visibility */
+  box-shadow: var(--shadow-light); /* Added subtle shadow */
+  border-radius: var(--border-radius); /* Consistent border-radius */
+}
+
+/* ===========================
+   MAIN CONTENT CONTAINER
+   =========================== */
+.main-content {
+  max-width: 720px; /* MODIFICATION: Increased width */
+  width: 100%;
+  margin: 1.5rem auto; /* Center it with some top margin, consistent with greeting */
+  background-color: var(--color-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  padding: 3rem 2.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  user-select: none;
+}
+
+/* ===========================
+   HEADINGS
+   =========================== */
+h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 0.75rem;
+  user-select: text;
+}
+
+/* ===========================
+   INPUT FIELDS
+   =========================== */
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1.125rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
+  background-color: var(--color-input-bg);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  font-weight: 500;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+  color: #9ca3af;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 6px 2px var(--color-accent);
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+button {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
+  cursor: pointer;
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed), transform var(--transition-speed);
+  user-select: none;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 9px rgba(239, 68, 68, 0.3);
+}
+
+button:hover,
+button:focus {
+  background-color: var(--color-accent-hover);
+  box-shadow: 0 6px 13px rgba(220, 38, 38, 0.5);
+  outline: none;
+  transform: scale(1.03);
+}
+
+/* Specific button styles for pomodoro */
+.btn-primary {
+  background-color: var(--color-accent);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.btn-secondary {
+  background-color: #6b7280; /* A neutral gray */
+}
+
+.btn-secondary:hover {
+  background-color: #4b5563; /* A darker gray */
+}
+
+
+/* ===========================
+   AUTH SECTIONS
+   =========================== */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ===========================
+   AUTH MESSAGE
+   =========================== */
+#auth-message {
+  margin-top: 1rem;
+  color: var(--color-accent);
+  font-weight: 600;
+  min-height: 24px;
+  user-select: text;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ===========================
+   Pomodoro app specific styles
+   =========================== */
+.pomodoro-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.clock-card {
+  background-color: var(--color-input-bg);
+  border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
+  padding: 2rem;
+  box-shadow: var(--shadow-light);
+  text-align: center;
+  width: 100%;
+  max-width: 300px; /* Kept narrow for the clock aesthetic */
+}
+
+.timer-display {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.mode-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.buttons button {
+  width: auto; /* Adjust button width */
+  padding: 0.9rem 2rem; /* More horizontal padding */
+  margin-top: 0; /* Remove top margin */
+}
+
+.stats {
+  text-align: center;
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+}
+
+.stats p {
+  margin: 0.5rem 0;
+}
+
+
+/* ===========================
+   NEW STYLES FOR WEEKLY GOALS & PROGRESS BAR
+   =========================== */
+
+/* Section styling (common for goals and progress) */
+.study-goals-section,
+.study-progress-section {
+    max-width: 720px; /* MODIFICATION: Increased width */
+    width: 100%;
+    margin: 1.5rem auto; /* Add margin-top for separation, auto for centering, consistent with main-content */
+    background-color: var(--color-bg);
+    border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
+    box-shadow: var(--shadow-light);
+    padding: 2.5rem; /* Consistent padding */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section-description {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin-top: -1rem; /* Pull up slightly closer to heading */
+    text-align: center; /* Center the description */
+}
+
+/* Styles for the single weekly goal input */
+.goals-input-single {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start; /* Align label/input to the left */
+}
+
+.goals-input-single label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.goals-input-single input[type="number"] {
+    width: 100%; /* Make input fill available width */
+    padding: 0.75rem 1rem; /* Consistent padding with other inputs */
+    font-size: 1.125rem; /* Consistent font size */
+    text-align: left; /* Default text alignment */
+    -moz-appearance: textfield; /* Hide arrows for Firefox */
+    border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
+}
+/* Hide arrows for Chrome, Safari, Edge */
+.goals-input-single input[type="number"]::-webkit-outer-spin-button,
+.goals-input-single input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+#save-goals-btn {
+    margin-top: 1.5rem; /* Space above the button */
+}
+
+/* Study Progress Bar */
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    padding: 0.5rem 0; /* MODIFICATION: Added vertical padding here */
+    margin-bottom: 0.75rem; /* MODIFICATION: Added space below it */
+}
+
+.progress-info span {
+    color: var(--color-accent);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 25px;
+    background-color: var(--color-input-bg);
+    border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
+    overflow: hidden; /* Ensures fill stays within rounded corners */
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow */
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: var(--color-accent);
+    width: 0%; /* Initial width, updated by JS */
+    border-radius: var(--border-radius); /* Match container */
+    transition: width 0.5s ease-in-out; /* Smooth transition for width change */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white; /* Text color for percentage */
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.progress-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--color-text-primary); /* Text color for percentage, outside fill */
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-shadow: 0 0 3px rgba(255,255,255,0.7); /* Subtle shadow for readability */
+}
+
+
+/* ===========================
+   RESPONSIVE ADJUSTMENTS
+   =========================== */
+@media (max-width: 768px) { /* Adjust breakpoint for larger width */
+  .main-content,
+  .study-goals-section,
+  .study-progress-section,
+  .greeting-container {
+    padding: 2rem 1.5rem 3rem;
+    max-width: 90%; /* Use a percentage for better responsiveness */
+  }
+  h2 {
+    font-size: 2rem;
+  }
+  button, input[type="text"], input[type="password"] {
+    font-size: 1rem;
+  }
+
+  .timer-display {
+      font-size: 3rem;
+  }
+
+  .mode-label {
+      font-size: 1rem;
+  }
+
+  .buttons button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+  }
+  .section-description {
+      font-size: 0.9rem;
+  }
+}
+
+/* Base body padding removal for sticky nav */
+html, body {
+  padding-top: 0;
+}

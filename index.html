@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+  <nav role="navigation" aria-label="Primary Navigation" class="nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo" aria-label="Homepage logo placeholder">Pomodoro</a>
+      <ul class="menu" role="menubar">
+        <li role="none"><a role="menuitem" href="#" tabindex="0">Tienda XP</a></li>
+        <li role="none"><a role="menuitem" href="#" tabindex="0">Amigos</a></li>
+        </ul>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="greeting-container" aria-live="polite"></div>
+
+    <div class="main-content">
+      <main class="page-container" role="main" aria-label="Pomodoro Application">
+        <section class="pomodoro-app" aria-live="polite" aria-atomic="true">
+
+          <div class="clock-card" role="timer" aria-label="Timer countdown">
+            <div id="timer-display" class="timer-display">20:00</div>
+            <div class="mode-label" id="mode-label">Pomodoro</div>
+          </div>
+          <div class="buttons">
+            <button id="play-pause" aria-label="Start or pause the timer" type="button" class="btn btn-primary">Play</button>
+            <button id="reset" aria-label="Reset the timer" type="button" class="btn btn-secondary">Reset</button>
+          </div>
+          <div class="stats" aria-live="polite">
+            <p>Pomodoros terminados: <span id="pomodoro-count">0</span></p>
+            <p id="break-label" hidden>Recreo largo!</p>
+          </div>
+        </section>
+      </main>
+            <!-- ojo  q aca empieza lo experimental-->
+       <section class="study-progress-section" aria-labelledby="study-progress-heading">
+        <h2 id="study-progress-heading">Progreso Semanal</h2>
+        <!--<p class="section-description">Mira tu progreso en base a tus objetivos semanales.</p> -->
+        <div class="progress-info">
+            <p>Actual: <span id="current-pomodoro-time">0</span> minutos</p>
+            <p>Deseado: <span id="total-desired-time">0</span> minutos</p>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" style="width: 0%;"></div>
+            <span id="progress-percentage-value" class="progress-percentage">0%</span>
+        </div>
+      </section>
+
+      <section class="study-goals-section" aria-labelledby="study-goals-heading">
+        <h2 id="study-goals-heading">Objetivos de Estudio Semanales</h2>
+        <p class="section-description">Establecé tu tiempo de estudio deseado para cada día de la semana</p>
+        <div class="goals-input-single">
+            <label for="weekly-goal">Meta Semanal Total (horas):</label>
+            <input type="number" id="weekly-goal" value="0" min="0">
+        </div>
+        <button id="save-goals-btn" class="btn btn-primary">Guardar Objetivos</button>
+      </section>
+    </div>
+  </div> <script src="script.js"></script>
+
+  <script>
+    // Protect the page
+    document.addEventListener('DOMContentLoaded', () => {
+        const usuario = localStorage.getItem('usuario');
+        const menu = document.querySelector('.nav-container .menu'); // Select the correct menu
+
+        if (!usuario) {
+            alert('Tenés que iniciar sesión primero.');
+            window.location.href = 'auth_interface.html';
+        } else {
+            // Display username in greeting container
+            document.querySelector('.greeting-container').textContent = `Hola, ${usuario}!`;
+
+            // Add logout button to the navigation menu
+            const logoutItem = document.createElement('li');
+            logoutItem.innerHTML = `<a href="#" onclick="logoutUsuario()">Salir</a>`;
+            menu.appendChild(logoutItem); // Append to the actual menu
+        }
+    });
+
+    // Function to log out
+    function logoutUsuario() {
+        localStorage.removeItem('usuario');
+        window.location.href = 'auth_interface.html'; // Redirect to auth_interface.html
+    }
+  </script>
+</body>
+</html>

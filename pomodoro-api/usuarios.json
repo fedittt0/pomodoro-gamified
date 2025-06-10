@@ -1,0 +1,13 @@
+[
+  {
+    "nombre": "gustavo",
+    "password": "12345678"
+  },
+  {
+    "id": "1749531463341",
+    "nombre": "gustavo1",
+    "password": "12345678",
+    "total_pomodoro_minutes": 20,
+    "weekly_goal": 60
+  }
+]
