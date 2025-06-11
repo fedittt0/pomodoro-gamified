@@ -39,7 +39,7 @@ app.post('/api/usuarios', (req, res) => {
     }
 
     // 🔐 Encriptar contraseña
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const hashedPassword = bcrypt.hashSync(password, 10); // 10 es el nivel de seguridad
 
     const usuarioObj = {
@@ -68,7 +68,7 @@ app.post('/api/login', (req, res) => {
     }
 
     // 🔐 Comparar la contraseña encriptada
-    const bcrypt = require('bcrypt');
+    const bcrypt = require('bcryptjs');
     const passwordMatch = bcrypt.compareSync(password, usuario.password);
     if (!passwordMatch) {
         return res.status(401).json({ mensaje: 'Credenciales incorrectas' });
