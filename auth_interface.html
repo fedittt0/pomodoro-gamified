@@ -38,7 +38,7 @@
                 return;
             }
 
-            fetch('http://localhost:3000/api/usuarios', {
+            fetch('https://pomodoro-gamified.onrender.com/api/usuarios', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre, password })
@@ -62,7 +62,7 @@
                 return;
             }
 
-            fetch('http://localhost:3000/api/login', {
+            fetch('https://pomodoro-gamified.onrender.com/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre, password })

@@ -98,7 +98,7 @@ async function handleTimerEnd() {
         // NEW: Send completed Pomodoro time to backend
         if (loggedInUserId && completedMinutes > 0) {
             try {
-                const response = await fetch('http://localhost:3000/api/pomodoro/add-time', {
+                const response = await fetch('https://pomodoro-gamified.onrender.com/api/pomodoro/add-time', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: loggedInUserId, minutesToAdd: completedMinutes })
@@ -143,7 +143,7 @@ async function fetchUserData() {
         return;
     }
     try {
-        const response = await fetch(`http://localhost:3000/api/user/data?userId=${loggedInUserId}`);
+        const response = await fetch(`https://pomodoro-gamified.onrender.com/api/user/data?userId=${loggedInUserId}`);
         if (response.ok) {
             const data = await response.json();
             totalPomodoroMinutes = data.totalPomodoroMinutes;
@@ -179,7 +179,7 @@ async function saveWeeklyGoals() {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/api/user/save-goals', {
+        const response = await fetch('https://pomodoro-gamified.onrender.com/api/user/save-goals', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             // MODIFICATION: Send totalHours to backend
