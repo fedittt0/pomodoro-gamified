@@ -3,40 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro - Login y Registro</title>
+    <title>Pomodoro - Bienvenida</title>
     <link rel="stylesheet" href="estilos.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8edea, #98f9b4);
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            max-width: 1000px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: fadeIn 1s ease;
+        }
+
+        .left, .right {
+            flex: 1;
+            padding: 40px;
+            transition: all 0.5s ease;
+        }
+
+        .left {
+            background-color: #f0fff4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid #ddd;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .right {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #ff4d4d;
+            box-shadow: 0 0 5px #ff4d4d;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff4d4d;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e04343;
+            box-shadow: 0 0 10px #ff4d4d;
+        }
+
+        .toggle {
+            margin-top: 20px;
+            cursor: pointer;
+            color: #ff4d4d;
+            font-weight: bold;
+            font-size: 16px;
+            background-color: #ffe5e5;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        .toggle:hover {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            color: white;
+            padding: 20px 50px;
+            border-radius: 15px;
+            font-size: 18px;
+            display: none;
+            animation: fadeInScale 0.5s ease;
+            text-align: center;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-    <nav role="navigation" aria-label="Primary Navigation" class="nav">
-        <div class="nav-container">
-            <a href="index.html" class="logo" aria-label="Homepage logo placeholder">Pomodoro</a>
+    <div class="message" id="auth-message"></div>
+
+    <div class="container">
+        <div class="left">
+            <h2 id="form-title">Crear Usuario</h2>
+            <input type="text" id="username" placeholder="Nombre de usuario">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button id="submit-btn" onclick="registrarUsuario()">Registrarse</button>
+            <div class="toggle" id="toggle-form" onclick="cambiarFormulario()">¿Ya tenés cuenta? Login</div>
         </div>
-    </nav>
 
-    <div class="content-wrapper">
-        <div class="main-content"> <div class="auth-container">
-                <h2>Crear Usuario</h2>
-                <input type="text" id="register-username" placeholder="Nombre de usuario">
-                <input type="password" id="register-password" placeholder="Contraseña">
-                <button onclick="registrarUsuario()">Registrarse</button>
-
-                <h2>Iniciar Sesión</h2>
-                <input type="text" id="login-username" placeholder="Nombre de usuario">
-                <input type="password" id="login-password" placeholder="Contraseña">
-                <button onclick="loginUsuario()">Iniciar Sesión</button>
-
-                <p id="auth-message"></p>
-            </div>
+        <div class="right">
+            <h2>¿Qué ofrece?</h2>
+            <ul>
+                <li>✔️ Registro y login seguro</li>
+                <li>✔️ Temporizador Pomodoro interactivo</li>
+                <li>✔️ Seguimiento de objetivos personales</li>
+                <li>✔️ Interfaz clara, rápida y amigable</li>
+                <li>✔️ Acceso desde cualquier dispositivo</li>
+            </ul>
         </div>
-    </div> <script>
-        function registrarUsuario() {
-            const nombre = document.getElementById('register-username').value;
-            const password = document.getElementById('register-password').value;
+    </div>
 
-            if (!nombre || !password) {
-                document.getElementById('auth-message').textContent = 'Por favor, completá todos los campos.';
-                return;
+    <script>
+        let modoRegistro = true;
+
+        function cambiarFormulario() {
+            const title = document.getElementById('form-title');
+            const button = document.getElementById('submit-btn');
+            const toggle = document.getElementById('toggle-form');
+
+            modoRegistro = !modoRegistro;
+
+            if (modoRegistro) {
+                title.textContent = 'Crear Usuario';
+                button.textContent = 'Registrarse';
+                button.onclick = registrarUsuario;
+                toggle.textContent = '¿Ya tenés cuenta? Login';
+            } else {
+                title.textContent = 'Iniciar Sesión';
+                button.textContent = 'Login';
+                button.onclick = loginUsuario;
+                toggle.textContent = '¿No tenés cuenta? Crear Usuario';
             }
+        }
+
+        function mostrarMensaje(texto) {
+            const mensaje = document.getElementById('auth-message');
+            mensaje.textContent = texto;
+            mensaje.style.display = 'block';
+            mensaje.style.animation = 'fadeInScale 0.5s ease';
+            setTimeout(() => {
+                mensaje.style.display = 'none';
+            }, 2500);
+        }
+
+        function registrarUsuario() {
+            const nombre = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
             fetch('https://pomodoro-gamified.onrender.com/api/usuarios', {
                 method: 'POST',
@@ -45,22 +204,17 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('auth-message').textContent = data.mensaje;
+                mostrarMensaje(data.mensaje);
             })
             .catch(error => {
-                document.getElementById('auth-message').textContent = 'Error al registrar.';
+                mostrarMensaje('Error al registrar.');
                 console.error('Error:', error);
             });
         }
 
         function loginUsuario() {
-            const nombre = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
-            if (!nombre || !password) {
-                document.getElementById('auth-message').textContent = 'Por favor, completá todos los campos.';
-                return;
-            }
+            const nombre = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
             fetch('https://pomodoro-gamified.onrender.com/api/login', {
                 method: 'POST',
@@ -75,33 +229,16 @@
                 }
             })
             .then(data => {
-                document.getElementById('auth-message').textContent = data.mensaje;
+                mostrarMensaje(data.mensaje);
                 localStorage.setItem('usuario', nombre);
-                localStorage.setItem('userId', data.userId); // <--- THIS LINE IS CRITICAL
                 setTimeout(() => {
                     window.location.href = 'index.html';
-                }, 1500);
+                }, 2000);
             })
             .catch(error => {
-                document.getElementById('auth-message').textContent = error.message;
+                mostrarMensaje(error.message);
                 console.error('Error:', error);
             });
-        }  
-        
-        // Mostrar el nombre del usuario en el menú si está logueado
-        document.addEventListener('DOMContentLoaded', () => {
-            const usuario = localStorage.getItem('usuario');
-            if (usuario) {
-                const nav = document.querySelector('.nav-container ul');
-                const userItem = document.createElement('li');
-                userItem.innerHTML = `<span style="font-weight: 600;">Hola, ${usuario}!</span> <a href="#" onclick="logoutUsuario()">Salir</a>`;
-                nav.appendChild(userItem);
-            }
-        });
-
-        function logoutUsuario() {
-            localStorage.removeItem('usuario');
-            window.location.reload();
         }
     </script>
 </body>
