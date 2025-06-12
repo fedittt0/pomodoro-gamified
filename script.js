@@ -15,267 +15,263 @@ let currentMode = 'Pomodoro'; // Modes: Pomodoro, Short Break, Long Break
 // Global variables for user data and goals
 let loggedInUserId = null;
 let totalPomodoroMinutes = 0; // Accumulated time from backend
-
-// MODIFICATION: weeklyStudyGoals is now a single number (in minutes)
 let weeklyStudyGoals = 0; // Total desired study time for the week in minutes
+let xp = 0; // User's XP
+
+// NEW: Global variable for last reset date from backend
+let lastResetDate = null;
 
 // DOM Elements
 const timerDisplay = document.getElementById('timer-display');
 const modeLabel = document.getElementById('mode-label');
 const playPauseButton = document.getElementById('play-pause');
 const resetButton = document.getElementById('reset');
-const pomodoroCountDisplay = document.getElementById('pomodoro-count'); // Consider if still needed or replaced by totalPomodoroMinutes
-
-// New DOM Elements for XP display
-const xpBubble = document.getElementById('xp-bubble'); // Reference to the XP bubble element
-
-// Global variable for user's XP
-let userXp = 0;
+const pomodoroCountDisplay = document.getElementById('pomodoro-count'); // Still useful for current session count
 
 // New DOM Elements for Study Goals & Progress
 const greetingContainer = document.querySelector('.greeting-container');
+const weeklyGoalInput = document.getElementById('weekly-goal'); // Main page goal input
+const saveGoalsBtn = document.getElementById('save-goals-btn'); // Main page save button
 
-// MODIFICATION: Reference the new single input for weekly goal
-const weeklyGoalInput = document.getElementById('weekly-goal'); // Direct reference to the single input
-const saveGoalsBtn = document.getElementById('save-goals-btn');
+// NEW: DOM Elements for Weekly Goal Modal
+const weeklyGoalModal = document.getElementById('weeklyGoalModal');
+const modalCloseButton = document.querySelector('#weeklyGoalModal .close-button');
+const modalWeeklyGoalInput = document.getElementById('modal-weekly-goal-input');
+const saveModalGoalBtn = document.getElementById('save-modal-goal-btn');
 
-const currentPomodoroTimeDisplay = document.getElementById('current-pomodoro-time');
-const totalDesiredTimeDisplay = document.getElementById('total-desired-time');
-const progressBarFill = document.querySelector('.progress-bar-fill');
-const progressPercentageValue = document.getElementById('progress-percentage-value');
+// NEW: Progress bar elements
+const progressBarFill = document.getElementById('progress-bar-fill');
+const progressPercentageDisplay = document.getElementById('progress-percentage');
+const progressTextDisplay = document.getElementById('progress-text');
 
-// ======================================
-// Helper Functions
-// ======================================
+
+// Helper function to format time for display
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
     const secs = (seconds % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
 }
 
+// Function to update the main display elements
 function updateDisplay() {
     timerDisplay.textContent = formatTime(timer);
     modeLabel.textContent = currentMode;
-    // pomodoroCountDisplay.textContent = pomodorosCompleted; // Keeping this for session count if needed
+    // pomodoroCountDisplay.textContent = pomodorosCompleted; // Keeping this for current session count
 }
 
-// Function to display the user's XP in the bubble
-function displayXp() {
-    if (xpBubble) {
-        xpBubble.textContent = `XP: ${userXp}`;
+// Function to switch between Pomodoro, Short Break, Long Break
+function switchMode() {
+    // Before switching, if it was a Pomodoro, add time to backend
+    if (currentMode === 'Pomodoro') {
+        pomodorosCompleted++;
+        pomodoroCountDisplay.textContent = pomodorosCompleted; // Update session count
+        addPomodoroTime(pomodoroDuration / 60); // Add minutes to backend
     }
+
+    if (currentMode === 'Pomodoro' && pomodorosCompleted % pomodorosUntilLongBreak === 0 && pomodorosCompleted > 0) {
+        currentMode = 'Long Break';
+        timer = longBreakDuration;
+        breakLabel.textContent = '¡Descanso Largo!'; // Assuming a break-label element exists
+        document.body.style.backgroundColor = '#d4edda'; // Example: green for long break
+    } else if (currentMode === 'Pomodoro') {
+        currentMode = 'Short Break';
+        timer = shortBreakDuration;
+        breakLabel.textContent = 'Descanso Corto'; // Assuming a break-label element exists
+        document.body.style.backgroundColor = '#f8d7da'; // Example: red for short break
+    } else {
+        currentMode = 'Pomodoro';
+        timer = pomodoroDuration;
+        breakLabel.textContent = ''; // Clear break label
+        document.body.style.backgroundColor = ''; // Reset background
+    }
+    updateDisplay();
 }
 
-// ======================================
-// Pomodoro Timer Logic
-// ======================================
+// Start the timer
 function startTimer() {
+    if (isRunning) return; // Prevent multiple intervals
     isRunning = true;
-    playPauseButton.textContent = 'Pausa';
+    playPauseButton.textContent = 'Pausar';
     timerInterval = setInterval(() => {
         timer--;
         updateDisplay();
         if (timer <= 0) {
             clearInterval(timerInterval);
-            handleTimerEnd();
+            isRunning = false;
+            // Play a sound or notification here
+            alert('¡Tiempo terminado!'); // Simple alert for now
+            switchMode(); // Switch to next mode
+            startTimer(); // Auto-start next mode, or prompt user
         }
     }, 1000);
 }
 
+// Pause the timer
 function pauseTimer() {
+    clearInterval(timerInterval);
     isRunning = false;
     playPauseButton.textContent = 'Iniciar';
-    clearInterval(timerInterval);
 }
 
+// Reset the timer to current mode's default duration
 function resetTimer() {
-    pauseTimer();
-    // Reset based on current mode
+    clearInterval(timerInterval);
+    isRunning = false;
+    playPauseButton.textContent = 'Iniciar';
     if (currentMode === 'Pomodoro') {
         timer = pomodoroDuration;
     } else if (currentMode === 'Short Break') {
         timer = shortBreakDuration;
-    } else if (currentMode === 'Long Break') {
+    } else { // Long Break
         timer = longBreakDuration;
     }
     updateDisplay();
 }
 
-// IMPORTANT MODIFICATION: handleTimerEnd to send data to backend
-// Function to handle the end of a Pomodoro session or break
-async function handleTimerEnd() { // Ensure it's an async function
-    if (currentMode === 'Pomodoro') {
-        pomodorosCompleted++;
-        // --- THIS IS THE CRITICAL FETCH CALL YOU NEED TO UPDATE ---
-        try {
-            const response = await fetch('https://pomodoro-gamified.onrender.com/api/pomodoro/add-time', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: loggedInUserId, minutes: pomodoroDuration / 60 })
-            });
+// Function to send Pomodoro time to the backend
+async function addPomodoroTime(minutes) {
+    try {
+        const response = await fetch(`${backendBaseUrl}/api/pomodoro/add-time`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: loggedInUserId, minutes: minutes })
+        });
 
-            if (response.ok) {
-                const data = await response.json();
-                totalPomodoroMinutes = data.total_pomodoro_minutes; // Update with new total
-                weeklyStudyGoals = data.weekly_goal; // Update with latest goal (just in case)
-                userXp = data.xp; // Get updated XP
-                updateProgressBar(); // Recalculate progress with new total minutes
-                displayXp(); // Update XP display
-                alert('Pomodoro completado!');
-            } else {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al agregar el tiempo de Pomodoro.');
-            }
-        } catch (error) {
-            console.error('Error al agregar tiempo de Pomodoro:', error);
-            alert('Error al agregar tiempo de Pomodoro: ' + error.message);
-        }
-        // --- END OF CRITICAL FETCH CALL ---
-
-
-        if (pomodorosCompleted % pomodorosUntilLongBreak === 0) {
-            currentMode = 'Long Break';
-            timer = longBreakDuration;
+        if (response.ok) {
+            const data = await response.json();
+            totalPomodoroMinutes = data.total_pomodoro_minutes;
+            weeklyStudyGoals = data.weekly_goal;
+            xp = data.xp; // Update global XP from response
+            updateProgressBar(); // Update progress bar after adding time
+            console.log('Tiempo de Pomodoro y XP agregados con éxito:', data);
         } else {
-            currentMode = 'Short Break';
-            timer = shortBreakDuration;
+            console.error('Error al agregar tiempo de Pomodoro:', response.status, response.statusText);
         }
-    } else { // It's a break
-        currentMode = 'Pomodoro';
-        timer = pomodoroDuration;
+    } catch (error) {
+        console.error('Error al comunicarse con la API para agregar tiempo:', error);
     }
-    updateDisplay();
 }
 
-// ======================================
-// User Authentication & Data Management
-// ======================================
-
-// NEW: Function to fetch user data from backend
-// Function to fetch user data and update UI
+// Fetch user data from the backend
 async function fetchUserData() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-        // This case should be handled by the DOMContentLoaded check, but good to have
-        console.error('No userId found in localStorage.');
-        alert('Tenés que iniciar sesión primero.');
-        window.location.href = 'auth_interface.html';
+        console.error('No user ID found in localStorage.');
         return;
     }
 
     try {
-        // Correctly fetch data using userId as a query parameter
-        const response = await fetch(`https://pomodoro-gamified.onrender.com/api/user/data?userId=${userId}`);
-        const data = await response.json();
-
+        // MODIFIED: Use GET request with query parameter
+        const response = await fetch(`${backendBaseUrl}/api/user/data?userId=${userId}`);
         if (response.ok) {
-            loggedInUserId = userId; // Ensure this is set
-            totalPomodoroMinutes = data.total_pomodoro_minutes; // Use underscore naming
-            weeklyStudyGoals = data.weekly_goal; // Use underscore naming
-            userXp = data.xp; // Get XP from backend
+            const data = await response.json();
+            totalPomodoroMinutes = data.total_pomodoro_minutes;
+            weeklyStudyGoals = data.weekly_goal;
+            xp = data.xp; // Ensure XP is being updated
+            lastResetDate = new Date(data.last_reset_date); // Store last reset date as Date object
 
-            // Update the HTML input field with the fetched weekly goal (convert minutes to hours)
-            if (weeklyGoalInput) { // Check if the element exists
-                weeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0);
-            }
-
-            // Update progress bar and XP display
-            updateProgressBar();
-            displayXp(); // Call function to display XP
-            
-            // Display user greeting (ensure this is still here)
-            if (greetingContainer && data.nombre) {
-                greetingContainer.textContent = `Hola, ${data.nombre}!`;
-            }
-
+            updateProgressBar(); // Update progress bar with fetched data
+            weeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0); // Set main goal input field
+            // No need to update XP display here yet, will add later when there's an XP display element
         } else {
-            console.error('Error al obtener datos del usuario:', data.message);
-            alert(data.message || 'Error al cargar los datos del usuario.');
-            // Optionally, log out if user data can't be fetched
-            logoutUsuario(); 
+            console.error('Failed to fetch user data:', response.status, response.statusText);
         }
     } catch (error) {
-        console.error('Error de conexión al obtener datos del usuario:', error);
-        alert('Error de conexión al cargar los datos del usuario.');
-        // Optionally, log out on connection error
-        logoutUsuario();
+        console.error('Error fetching user data:', error);
     }
 }
 
-// MODIFICATION: Function to populate the single weekly study goal input
-function populateGoalsInputs() {
-    // Convert minutes from backend to hours for display in input
-    const hours = weeklyStudyGoals / 60;
-    if (weeklyGoalInput) {
-        weeklyGoalInput.value = hours;
+// MODIFIED: saveWeeklyGoals to handle input from main page or modal
+async function saveWeeklyGoals(event) {
+    let inputSource;
+    if (event && event.target && (event.target.id === 'save-goals-btn' || event.target.id === 'save-modal-goal-btn')) {
+        inputSource = event.target.id;
+    } else {
+        // Default if called without an event (e.g., from initial setup)
+        inputSource = 'main-page';
     }
-}
 
-// MODIFICATION: Function to save single weekly study goal to backend
-// Function to save weekly goals
-async function saveWeeklyGoals() {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-        alert('Necesitas iniciar sesión para guardar tus objetivos.');
-        window.location.href = 'auth_interface.html';
+    const currentWeeklyGoalInput = (inputSource === 'save-modal-goal-btn') ? modalWeeklyGoalInput : weeklyGoalInput;
+    const hours = parseFloat(currentWeeklyGoalInput.value);
+
+    if (isNaN(hours) || hours < 0) {
+        alert('Por favor, ingresa un número válido para la meta semanal.');
         return;
     }
 
-    // Get the value from the weekly goal input, convert to minutes
-    const newWeeklyGoalHours = parseInt(weeklyGoalInput.value);
-    if (isNaN(newWeeklyGoalHours) || newWeeklyGoalHours < 0) {
-        alert('Por favor, introduce una meta semanal válida en horas.');
-        return;
-    }
-    const newWeeklyGoalMinutes = newWeeklyGoalHours * 60; // Convert hours to minutes
+    const minutes = hours * 60; // Convert hours to minutes
 
     try {
-        const response = await fetch('https://pomodoro-gamified.onrender.com/api/user/save-goals', {
+        const response = await fetch(`${backendBaseUrl}/api/user/save-goals`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: userId, weekly_goal: newWeeklyGoalMinutes })
+            body: JSON.stringify({ userId: loggedInUserId, weekly_goal: minutes })
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            alert(data.message);
-            // Update frontend immediately with data from backend
-            weeklyStudyGoals = data.weekly_goal; // Use underscore naming
-            totalPomodoroMinutes = data.total_pomodoro_minutes; // Use underscore naming (ensure this is updated from backend)
-            userXp = data.xp; // Update XP
-            updateProgressBar(); // Recalculate progress with new goal and total
-            displayXp(); // Update XP display
+            const data = await response.json();
+            alert(data.mensaje);
+            weeklyStudyGoals = data.weekly_goal; // Update global variable with saved goal
+            totalPomodoroMinutes = data.total_pomodoro_minutes; // Update total minutes (might have been reset by backend)
+            xp = data.xp; // Update XP
+
+            updateProgressBar(); // Update progress bar display
+            // Ensure the main page input also reflects the newly set goal
+            weeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0); 
+
+            if (inputSource === 'save-modal-goal-btn') {
+                hideGoalModal(); // Hide modal if saved from there
+            }
         } else {
-            throw new Error(data.message || 'Error al guardar objetivos.');
+            const errorData = await response.json();
+            alert('Error al guardar objetivo: ' + (errorData.mensaje || 'Error desconocido.'));
         }
     } catch (error) {
-        console.error('Error al guardar objetivos:', error);
-        alert('Error al guardar objetivos: ' + error.message);
+        console.error('Error saving weekly goals:', error);
+        alert('Error al guardar objetivo. Intenta de nuevo.');
     }
 }
 
-// NEW: Function to update the progress bar display
+// Function to update the progress bar
 function updateProgressBar() {
-    // MODIFICATION: totalDesiredMinutes is now directly from weeklyStudyGoals (which is in minutes)
-    const totalDesiredMinutes = weeklyStudyGoals;
+    const percentage = weeklyStudyGoals > 0 ? (totalPomodoroMinutes / weeklyStudyGoals) * 100 : 0;
+    const clampedPercentage = Math.min(percentage, 100); // Cap at 100%
 
-    totalDesiredTimeDisplay.textContent = totalDesiredMinutes;
-    currentPomodoroTimeDisplay.textContent = totalPomodoroMinutes;
-
-    let percentage = 0;
-    if (totalDesiredMinutes > 0) {
-        percentage = (totalPomodoroMinutes / totalDesiredMinutes) * 100;
+    if (progressBarFill) {
+        progressBarFill.style.width = `${clampedPercentage}%`;
     }
-    percentage = Math.min(100, Math.max(0, percentage)); // Cap between 0 and 100
-
-    progressBarFill.style.width = `${percentage}%`;
-    progressPercentageValue.textContent = Math.round(percentage); // Display rounded percentage
+    if (progressPercentageDisplay) {
+        progressPercentageDisplay.textContent = `${Math.round(clampedPercentage)}%`; // Display rounded percentage
+    }
+    if (progressTextDisplay) {
+        progressTextDisplay.textContent = `${(totalPomodoroMinutes / 60).toFixed(0)} / ${(weeklyStudyGoals / 60).toFixed(0)} horas`;
+    }
 }
 
-// ======================================
+// NEW: Function to check if today is Monday
+function isMonday() {
+    const today = new Date();
+    return today.getDay() === 1; // Monday is 1 (Sunday is 0)
+}
+
+// NEW: Functions to show/hide the weekly goal modal
+function showGoalModal() {
+    if (weeklyGoalModal) {
+        // Set the input value to the current weekly goal (or 0 if not set)
+        modalWeeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0);
+        weeklyGoalModal.style.display = 'flex'; // Use flex to center
+    }
+}
+
+function hideGoalModal() {
+    if (weeklyGoalModal) {
+        weeklyGoalModal.style.display = 'none';
+    }
+}
+
+// ======================================\
 // Event Listeners
-// ======================================
+// ======================================\
 playPauseButton.addEventListener('click', () => {
     if (isRunning) {
         pauseTimer();
@@ -286,20 +282,35 @@ playPauseButton.addEventListener('click', () => {
 
 resetButton.addEventListener('click', resetTimer);
 
-// NEW: Event listener for saving goals
+// Event listener for saving goals from the main page input
 saveGoalsBtn.addEventListener('click', saveWeeklyGoals);
 
-// ======================================
+// NEW: Event listener for saving goals from the modal
+saveModalGoalBtn.addEventListener('click', saveWeeklyGoals);
+
+// NEW: Event listeners for closing the modal
+modalCloseButton.addEventListener('click', hideGoalModal);
+weeklyGoalModal.addEventListener('click', (event) => {
+    if (event.target === weeklyGoalModal) { // Close if clicked on backdrop
+        hideGoalModal();
+    }
+});
+
+
+// ======================================\
 // Initialization on page load
-// ======================================
-document.addEventListener('DOMContentLoaded', () => {
+// ======================================\
+// Use the backend base URL from your .env file or a predefined constant
+const backendBaseUrl = 'https://pomodoro-gamified.onrender.com'; // Replace with your actual Render backend URL
+
+document.addEventListener('DOMContentLoaded', async () => {
     const usuario = localStorage.getItem('usuario');
-    loggedInUserId = localStorage.getItem('userId'); // Get userId from localStorage
+    loggedInUserId = localStorage.getItem('userId');
 
     // Redirect if not logged in
     if (!usuario || !loggedInUserId) {
         alert('Tenés que iniciar sesión primero.');
-        window.location.href = 'auth_interface.html';
+        window.location.href = 'auth_interface.html'; // Assuming auth_interface.html is your login page
         return; // Stop execution if not logged in
     }
 
@@ -308,14 +319,21 @@ document.addEventListener('DOMContentLoaded', () => {
         greetingContainer.textContent = `Hola, ${usuario}!`;
     }
 
-    // NEW: Fetch user data and update UI
-    fetchUserData();
+    await fetchUserData(); // Wait for user data to be fetched first
+
+    // NEW: Logic to display weekly goal modal on Monday if goal is not set
+    // This logic relies on the backend having potentially reset total_pomodoro_minutes.
+    // The `weekly_goal` itself is only reset when the user sets it, so we check if it's 0.
+    if (isMonday() && weeklyStudyGoals === 0) {
+        showGoalModal();
+    }
+
     updateDisplay(); // Initial display of timer
 });
 
-// Logout function (from original code, kept for completeness)
+// Logout function
 function logoutUsuario() {
     localStorage.removeItem('usuario');
-    localStorage.removeItem('userId'); // <-- Ensure this is present
+    localStorage.removeItem('userId'); // Also remove userId on logout
     window.location.href = 'auth_interface.html'; // Redirect to auth_interface.html
 }

@@ -64,7 +64,23 @@
         <button id="save-goals-btn" class="btn btn-primary">Guardar Objetivos</button>
       </section>
     </div>
-  </div> <script src="script.js"></script>
+  </div> 
+  
+  <!-- POPUP de weekly goal-->
+  <div id="weeklyGoalModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>¡Es Lunes! Hora de establecer tu meta semanal.</h2>
+        <p>¿Cuántas horas de Pomodoro quieres estudiar esta semana?</p>
+        <div class="goals-input-single">
+            <label for="modal-weekly-goal-input">Meta Semanal (horas):</label>
+            <input type="number" id="modal-weekly-goal-input" value="0" min="0">
+        </div>
+        <button id="save-modal-goal-btn">Guardar Meta</button>
+    </div>
+</div>
+  
+  <script src="script.js"></script>
 
   <script>
     // Protect the page
