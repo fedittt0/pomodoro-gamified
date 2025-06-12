@@ -29,6 +29,8 @@ const resetButton = document.getElementById('reset');
 const pomodoroCountDisplay = document.getElementById('pomodoro-count');
 const breakLabel = document.getElementById('break-label'); // NEW: Reference for the break label
 const xpBubble = document.getElementById('xp-bubble');
+const currentPomodoroTimeDisplay = document.getElementById('current-pomodoro-time');
+const totalDesiredTimeDisplay = document.getElementById('total-desired-time');
 
 // New DOM Elements for Study Goals & Progress
 const greetingContainer = document.querySelector('.greeting-container');
@@ -171,8 +173,25 @@ async function fetchUserData() {
             xp = data.xp; // Ensure XP is being updated
             lastResetDate = new Date(data.last_reset_date); // Store last reset date as Date object
 
+            // IMPORTANT: Update display elements with fetched data
+            if (currentPomodoroTimeDisplay) {
+                currentPomodoroTimeDisplay.textContent = `${totalPomodoroMinutes} minutos`;
+            }
+            if (totalDesiredTimeDisplay) {
+                totalDesiredTimeDisplay.textContent = `${weeklyStudyGoals} minutos`;
+            }
+            if (xpBubble) {
+                xpBubble.textContent = `XP: ${xp}`;
+            }
+
             updateProgressBar(); // Update progress bar with fetched data
-            weeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0); // Set main goal input field
+            // Assuming weeklyGoalInput is for a form field, update it too
+            // If the modal-weekly-goal-input exists and you want to show it on load:
+            const modalWeeklyGoalInput = document.getElementById('modal-weekly-goal-input');
+            if (modalWeeklyGoalInput) {
+                modalWeeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0); // Set modal input field in hours
+            }
+
         } else {
             console.error('Failed to fetch user data:', response.status, response.statusText);
         }
