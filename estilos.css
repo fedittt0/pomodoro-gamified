@@ -59,6 +59,32 @@ nav .nav-container {
   border-radius: var(--border-radius);
 }
 
+/* ===========================
+   XP BUBBLE
+   =========================== */
+.xp-bubble {
+    background-color: var(--color-accent); /* Use your accent color */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem; /* Rounded corners */
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-left: auto; /* Push it to the right within flex container */
+    white-space: nowrap; /* Prevent text from wrapping */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Optional: Positioning if you want it absolutely placed */
+    /* position: absolute;
+    top: 1rem;
+    right: 1rem; */
+}
+
+/* Adjust nav-container to accommodate XP bubble if needed */
+.nav-container {
+    display: flex;
+    align-items: center; /* Vertically align items */
+    gap: 1rem; /* Space between nav items */
+}
+
 nav .logo {
   font-weight: 800;
   font-size: 1.5rem;
