@@ -70,35 +70,43 @@ app.post('/api/login', async (req, res) => {
 
 // --- ADD POMODORO TIME ---
 app.post('/api/pomodoro/add-time', async (req, res) => {
-    const { userId, minutesToAdd } = req.body; // Expecting userId, not nombre
+    // Frontend sends userId, not nombre, so destructure userId
+    const { userId, minutes } = req.body; 
+
+    // Input validation: Ensure minutes is a valid number
+    if (typeof minutes !== 'number' || isNaN(minutes) || minutes < 0) {
+        return res.status(400).json({ mensaje: 'Valor de minutos inválido.' });
+    }
+
     try {
-        const user = await Usuario.findById(userId); // Find user by ID
-        if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        // Find the user by their unique MongoDB _id (userId)
+        const usuario = await Usuario.findById(userId); 
+
+        if (!usuario) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }
 
-        user.total_pomodoro_minutes += minutesToAdd; // Use underscore naming
+        // Add the new minutes to the total
+        usuario.total_pomodoro_minutes += minutes;
 
-        // Calculate current XP based on progress
-        let currentPercentage = 0;
-        if (user.weekly_goal > 0) { // Use underscore naming
-            currentPercentage = (user.total_pomodoro_minutes / user.weekly_goal) * 100; // Use underscore naming
-            // Cap percentage at 100% to avoid XP accumulation beyond goal if goal is met
-            currentPercentage = Math.min(100, currentPercentage);
-        }
-        
-        // Calculate total XP: 10 XP for each full percentage point
-        user.xp = Math.floor(currentPercentage) * 10; 
-        
-        await user.save();
-        res.json({ 
-            total_pomodoro_minutes: user.total_pomodoro_minutes, 
-            weekly_goal: user.weekly_goal,
-            xp: user.xp // Send updated XP back to frontend
+        // For now, XP calculation: 1 XP per minute of Pomodoro
+        // You can adjust this formula later
+        usuario.xp += minutes; 
+
+        await usuario.save(); // Save the updated user document
+
+        // Send back the updated user data to the frontend
+        res.json({
+            mensaje: 'Tiempo y XP actualizados con éxito',
+            total_pomodoro_minutes: usuario.total_pomodoro_minutes,
+            weekly_goal: usuario.weekly_goal, // Send back current weekly goal
+            xp: usuario.xp // Send back updated XP
         });
+
     } catch (error) {
-        console.error('Error al agregar tiempo de pomodoro:', error);
-        res.status(500).json({ message: 'Error interno del servidor.' });
+        // Log the detailed error for debugging
+        console.error('Error al agregar tiempo de Pomodoro:', error); 
+        res.status(500).json({ mensaje: 'Error interno del servidor.' });
     }
 });
 
