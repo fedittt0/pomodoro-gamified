@@ -18,7 +18,7 @@ let totalPomodoroMinutes = 0; // Accumulated time from backend
 let weeklyStudyGoals = 0; // Total desired study time for the week in minutes
 let xp = 0; // User's XP
 
-// NEW: Global variable for last reset date from backend
+// Global variable for last reset date from backend
 let lastResetDate = null;
 
 // DOM Elements
@@ -26,20 +26,21 @@ const timerDisplay = document.getElementById('timer-display');
 const modeLabel = document.getElementById('mode-label');
 const playPauseButton = document.getElementById('play-pause');
 const resetButton = document.getElementById('reset');
-const pomodoroCountDisplay = document.getElementById('pomodoro-count'); // Still useful for current session count
+const pomodoroCountDisplay = document.getElementById('pomodoro-count');
+const breakLabel = document.getElementById('break-label'); // NEW: Reference for the break label
 
 // New DOM Elements for Study Goals & Progress
 const greetingContainer = document.querySelector('.greeting-container');
 const weeklyGoalInput = document.getElementById('weekly-goal'); // Main page goal input
 const saveGoalsBtn = document.getElementById('save-goals-btn'); // Main page save button
 
-// NEW: DOM Elements for Weekly Goal Modal
+// DOM Elements for Weekly Goal Modal
 const weeklyGoalModal = document.getElementById('weeklyGoalModal');
 const modalCloseButton = document.querySelector('#weeklyGoalModal .close-button');
 const modalWeeklyGoalInput = document.getElementById('modal-weekly-goal-input');
 const saveModalGoalBtn = document.getElementById('save-modal-goal-btn');
 
-// NEW: Progress bar elements
+// Progress bar elements
 const progressBarFill = document.getElementById('progress-bar-fill');
 const progressPercentageDisplay = document.getElementById('progress-percentage');
 const progressTextDisplay = document.getElementById('progress-text');
@@ -56,35 +57,35 @@ function formatTime(seconds) {
 function updateDisplay() {
     timerDisplay.textContent = formatTime(timer);
     modeLabel.textContent = currentMode;
-    // pomodoroCountDisplay.textContent = pomodorosCompleted; // Keeping this for current session count
 }
 
 // Function to switch between Pomodoro, Short Break, Long Break
 function switchMode() {
-    // Before switching, if it was a Pomodoro, add time to backend
     if (currentMode === 'Pomodoro') {
         pomodorosCompleted++;
         pomodoroCountDisplay.textContent = pomodorosCompleted; // Update session count
-        addPomodoroTime(pomodoroDuration / 60); // Add minutes to backend
-    }
 
-    if (currentMode === 'Pomodoro' && pomodorosCompleted % pomodorosUntilLongBreak === 0 && pomodorosCompleted > 0) {
-        currentMode = 'Long Break';
-        timer = longBreakDuration;
-        breakLabel.textContent = '¡Descanso Largo!'; // Assuming a break-label element exists
-        document.body.style.backgroundColor = '#d4edda'; // Example: green for long break
-    } else if (currentMode === 'Pomodoro') {
-        currentMode = 'Short Break';
-        timer = shortBreakDuration;
-        breakLabel.textContent = 'Descanso Corto'; // Assuming a break-label element exists
-        document.body.style.backgroundColor = '#f8d7da'; // Example: red for short break
-    } else {
+        // Add time to backend BEFORE switching mode visually
+        addPomodoroTime(pomodoroDuration / 60);
+
+        if (pomodorosCompleted % pomodorosUntilLongBreak === 0 && pomodorosCompleted > 0) {
+            currentMode = 'Long Break';
+            timer = longBreakDuration;
+            if (breakLabel) breakLabel.textContent = '¡Descanso Largo!';
+            document.body.style.backgroundColor = '#d4edda'; // Example: green for long break
+        } else {
+            currentMode = 'Short Break';
+            timer = shortBreakDuration;
+            if (breakLabel) breakLabel.textContent = 'Descanso Corto';
+            document.body.style.backgroundColor = '#f8d7da'; // Example: red for short break
+        }
+    } else { // If currentMode was a break (Short Break or Long Break)
         currentMode = 'Pomodoro';
         timer = pomodoroDuration;
-        breakLabel.textContent = ''; // Clear break label
+        if (breakLabel) breakLabel.textContent = ''; // Clear break label
         document.body.style.backgroundColor = ''; // Reset background
     }
-    updateDisplay();
+    updateDisplay(); // Update display with new mode and timer
 }
 
 // Start the timer
@@ -98,10 +99,10 @@ function startTimer() {
         if (timer <= 0) {
             clearInterval(timerInterval);
             isRunning = false;
-            // Play a sound or notification here
+            playPauseButton.textContent = 'Iniciar'; // Reset button text
             alert('¡Tiempo terminado!'); // Simple alert for now
-            switchMode(); // Switch to next mode
-            startTimer(); // Auto-start next mode, or prompt user
+            switchMode(); // This will set the new timer and mode
+            startTimer(); // Auto-start the new mode (break or next pomodoro)
         }
     }, 1000);
 }
@@ -161,7 +162,6 @@ async function fetchUserData() {
     }
 
     try {
-        // MODIFIED: Use GET request with query parameter
         const response = await fetch(`${backendBaseUrl}/api/user/data?userId=${userId}`);
         if (response.ok) {
             const data = await response.json();
@@ -172,7 +172,6 @@ async function fetchUserData() {
 
             updateProgressBar(); // Update progress bar with fetched data
             weeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0); // Set main goal input field
-            // No need to update XP display here yet, will add later when there's an XP display element
         } else {
             console.error('Failed to fetch user data:', response.status, response.statusText);
         }
@@ -181,13 +180,12 @@ async function fetchUserData() {
     }
 }
 
-// MODIFIED: saveWeeklyGoals to handle input from main page or modal
+// saveWeeklyGoals to handle input from main page or modal
 async function saveWeeklyGoals(event) {
     let inputSource;
     if (event && event.target && (event.target.id === 'save-goals-btn' || event.target.id === 'save-modal-goal-btn')) {
         inputSource = event.target.id;
     } else {
-        // Default if called without an event (e.g., from initial setup)
         inputSource = 'main-page';
     }
 
@@ -244,17 +242,18 @@ function updateProgressBar() {
         progressPercentageDisplay.textContent = `${Math.round(clampedPercentage)}%`; // Display rounded percentage
     }
     if (progressTextDisplay) {
-        progressTextDisplay.textContent = `${(totalPomodoroMinutes / 60).toFixed(0)} / ${(weeklyStudyGoals / 60).toFixed(0)} horas`;
+        // Display progress in hours, allowing for decimals if needed for small values
+        progressTextDisplay.textContent = `${(totalPomodoroMinutes / 60).toFixed(1)} / ${(weeklyStudyGoals / 60).toFixed(0)} horas`;
     }
 }
 
-// NEW: Function to check if today is Monday
+// Function to check if today is Monday
 function isMonday() {
     const today = new Date();
     return today.getDay() === 1; // Monday is 1 (Sunday is 0)
 }
 
-// NEW: Functions to show/hide the weekly goal modal
+// Functions to show/hide the weekly goal modal
 function showGoalModal() {
     if (weeklyGoalModal) {
         // Set the input value to the current weekly goal (or 0 if not set)
@@ -285,10 +284,10 @@ resetButton.addEventListener('click', resetTimer);
 // Event listener for saving goals from the main page input
 saveGoalsBtn.addEventListener('click', saveWeeklyGoals);
 
-// NEW: Event listener for saving goals from the modal
+// Event listener for saving goals from the modal
 saveModalGoalBtn.addEventListener('click', saveWeeklyGoals);
 
-// NEW: Event listeners for closing the modal
+// Event listeners for closing the modal
 modalCloseButton.addEventListener('click', hideGoalModal);
 weeklyGoalModal.addEventListener('click', (event) => {
     if (event.target === weeklyGoalModal) { // Close if clicked on backdrop
@@ -300,8 +299,7 @@ weeklyGoalModal.addEventListener('click', (event) => {
 // ======================================\
 // Initialization on page load
 // ======================================\
-// Use the backend base URL from your .env file or a predefined constant
-const backendBaseUrl = 'https://pomodoro-gamified.onrender.com'; // Replace with your actual Render backend URL
+const backendBaseUrl = 'https://pomodoro-gamified.onrender.com'; // IMPORTANT: Replace with your actual Render backend URL
 
 document.addEventListener('DOMContentLoaded', async () => {
     const usuario = localStorage.getItem('usuario');
@@ -321,14 +319,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await fetchUserData(); // Wait for user data to be fetched first
 
-    // NEW: Logic to display weekly goal modal on Monday if goal is not set
-    // This logic relies on the backend having potentially reset total_pomodoro_minutes.
-    // The `weekly_goal` itself is only reset when the user sets it, so we check if it's 0.
+    // Logic to display weekly goal modal on Monday ONLY if weeklyStudyGoals is 0
     if (isMonday() && weeklyStudyGoals === 0) {
         showGoalModal();
     }
 
-    updateDisplay(); // Initial display of timer
+    updateDisplay(); // Initial display of timer (Pomodoro 20:00)
 });
 
 // Logout function

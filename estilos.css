@@ -288,6 +288,14 @@ button:focus {
   max-width: 300px; /* Kept narrow for the clock aesthetic */
 }
 
+.break-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-secondary); /* Adjust color as needed */
+    margin-top: 0.5rem; /* Add some space above it */
+    min-height: 1.2em; /* Ensure it takes up space even when empty */
+}
+
 .timer-display {
   font-size: 4rem;
   font-weight: 700;
