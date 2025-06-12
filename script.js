@@ -28,6 +28,7 @@ const playPauseButton = document.getElementById('play-pause');
 const resetButton = document.getElementById('reset');
 const pomodoroCountDisplay = document.getElementById('pomodoro-count');
 const breakLabel = document.getElementById('break-label'); // NEW: Reference for the break label
+const xpBubble = document.getElementById('xp-bubble');
 
 // New DOM Elements for Study Goals & Progress
 const greetingContainer = document.querySelector('.greeting-container');
