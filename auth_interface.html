@@ -230,7 +230,8 @@
             })
             .then(data => {
                 mostrarMensaje(data.mensaje);
-                localStorage.setItem('usuario', nombre);
+                localStorage.setItem('usuario', data.nombre);
+                localStorage.setItem('userId', data.userId);
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
