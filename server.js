@@ -8,8 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Remove deprecated options as they have no effect in newer Mongoose versions
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Conectado a MongoDB'))
     .catch(err => console.error('Error de conexión a MongoDB:', err));
 
@@ -18,8 +17,8 @@ const UsuarioSchema = new mongoose.Schema({
     password: { type: String, required: true },
     total_pomodoro_minutes: { type: Number, default: 0 },
     weekly_goal: { type: Number, default: 0 },
-    xp: { type: Number, default: 0 },
-    last_reset_date: { type: Date, default: Date.now } // <--- NEW: Field to track last reset date
+    xp: { type: Number, default: 0 }, // NEW: Add XP field
+    last_reset_date: { type: Date, default: Date.now } // NEW: Add last reset date
 });
 
 const Usuario = mongoose.model('Usuario', UsuarioSchema);
@@ -32,19 +31,27 @@ app.post('/api/usuarios', async (req, res) => {
         return res.status(400).json({ mensaje: 'Nombre y contraseña son requeridos.' });
     }
 
-    try {
-        const existingUser = await Usuario.findOne({ nombre });
-        if (existingUser) {
-            return res.status(400).json({ mensaje: 'El usuario ya existe' });
-        }
+    const existingUser = await Usuario.findOne({ nombre });
+    if (existingUser) {
+        return res.status(400).json({ mensaje: 'El usuario ya existe' });
+    }
 
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const nuevoUsuario = new Usuario({ nombre, password: hashedPassword });
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const nuevoUsuario = new Usuario({
+        nombre,
+        password: hashedPassword,
+        total_pomodoro_minutes: 0,
+        weekly_goal: 0,
+        xp: 0, // Initialize XP for new user
+        last_reset_date: new Date() // Set initial reset date
+    });
+
+    try {
         await nuevoUsuario.save();
         res.status(201).json({ mensaje: 'Usuario registrado con éxito', userId: nuevoUsuario._id });
     } catch (error) {
         console.error('Error al registrar usuario:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor.' });
+        res.status(500).json({ mensaje: 'Error interno del servidor al registrar usuario.' });
     }
 });
 
@@ -52,153 +59,117 @@ app.post('/api/usuarios', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { nombre, password } = req.body;
 
-    try {
-        const usuario = await Usuario.findOne({ nombre });
-        if (!usuario) {
-            return res.status(400).json({ mensaje: 'Credenciales incorrectas' });
-        }
-
-        const isMatch = bcrypt.compareSync(password, usuario.password);
-        if (!isMatch) {
-            return res.status(400).json({ mensaje: 'Credenciales incorrectas' });
-        }
-
-        res.status(200).json({
-            mensaje: 'Inicio de sesión exitoso',
-            userId: usuario._id,
-            nombre: usuario.nombre
-        });
-    } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor.' });
+    const usuario = await Usuario.findOne({ nombre });
+    if (!usuario) {
+        return res.status(400).json({ mensaje: 'Credenciales incorrectas' });
     }
+
+    const isMatch = bcrypt.compareSync(password, usuario.password);
+    if (!isMatch) {
+        return res.status(400).json({ mensaje: 'Credenciales incorrectas' });
+    }
+
+    res.json({ mensaje: 'Inicio de sesión exitoso', userId: usuario._id, nombre: usuario.nombre });
 });
 
 // --- ADD POMODORO TIME ---
+// MODIFIED: Now expects userId in body and finds by _id
 app.post('/api/pomodoro/add-time', async (req, res) => {
-    const { userId, minutes } = req.body;
+    const { userId, minutes } = req.body; // Expects userId
 
-    if (typeof minutes !== 'number' || isNaN(minutes) || minutes < 0) {
-        return res.status(400).json({ mensaje: 'Valor de minutos inválido.' });
+    const usuario = await Usuario.findById(userId); // Find user by MongoDB _id
+    if (!usuario) {
+        return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
+    usuario.total_pomodoro_minutes += minutes;
+    usuario.xp += minutes; // Add XP based on minutes studied (1 XP per minute)
+
     try {
-        const usuario = await Usuario.findById(userId);
-
-        if (!usuario) {
-            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-        }
-
-        usuario.total_pomodoro_minutes += minutes;
-        usuario.xp += minutes; // Add XP for Pomodoro minutes (adjust formula as needed)
-
         await usuario.save();
-
         res.json({
             mensaje: 'Tiempo y XP actualizados con éxito',
             total_pomodoro_minutes: usuario.total_pomodoro_minutes,
-            weekly_goal: usuario.weekly_goal,
-            xp: usuario.xp
+            weekly_goal: usuario.weekly_goal, // Return weekly_goal for frontend consistency
+            xp: usuario.xp // Return updated XP
         });
-
     } catch (error) {
         console.error('Error al agregar tiempo de Pomodoro:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor.' });
+        res.status(500).json({ mensaje: 'Error interno del servidor al actualizar tiempo.' });
     }
 });
 
 // --- GET USER DATA ---
+// MODIFIED: Now is a GET request and takes userId from query params
 app.get('/api/user/data', async (req, res) => {
-    const userId = req.query.userId;
+    const { userId } = req.query; // Get userId from query parameters
 
-    if (!userId) {
-        return res.status(400).json({ mensaje: 'ID de usuario requerido.' });
+    const usuario = await Usuario.findById(userId); // Find user by MongoDB _id
+    if (!usuario) {
+        return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    try {
-        const usuario = await Usuario.findById(userId);
+    // Weekly reset logic for total_pomodoro_minutes (Only resets if it's Monday and not reset yet this week)
+    const today = new Date();
+    // Get current day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
+    const currentDayOfWeek = today.getDay(); 
 
-        if (!usuario) {
-            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    // Calculate the start of the current week (Monday at 00:00:00)
+    const startOfCurrentWeek = new Date(today);
+    // Adjust to Monday: if today is Sunday (0), subtract 6 days; otherwise, subtract (day - 1) days.
+    startOfCurrentWeek.setDate(today.getDate() - (currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1));
+    startOfCurrentWeek.setHours(0, 0, 0, 0); // Set time to beginning of the day
+
+    let total_pomodoro_minutes = usuario.total_pomodoro_minutes;
+    let last_reset_date = usuario.last_reset_date || startOfCurrentWeek; // Ensure last_reset_date exists
+
+    // If it's Monday and the last reset happened *before* the start of the current week (i.e., last week or earlier)
+    if (currentDayOfWeek === 1 && new Date(last_reset_date) < startOfCurrentWeek) {
+        total_pomodoro_minutes = 0; // Reset total minutes for the new week
+        usuario.total_pomodoro_minutes = 0; // Update in DB
+        usuario.last_reset_date = today; // Update last reset date to today's date
+        try {
+            await usuario.save(); // Save the reset state to DB
+            console.log(`Weekly reset for user ${usuario.nombre}. total_pomodoro_minutes reset to 0.`);
+        } catch (saveError) {
+            console.error('Error saving weekly reset:', saveError);
         }
-
-        // --- WEEKLY RESET LOGIC ---
-        const now = new Date();
-        // Create a date object for the current day at 00:00:00 to compare dates only
-        const todayAtMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        // Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-        const currentDayOfWeek = now.getDay(); // 0 is Sunday, 1 is Monday...
-
-        // Calculate the start of the current week (Monday)
-        // If today is Monday (1), days_since_monday = 0
-        // If today is Sunday (0), days_since_monday = 6
-        const daysSinceMonday = (currentDayOfWeek === 0) ? 6 : (currentDayOfWeek - 1);
-        const startOfCurrentWeek = new Date(todayAtMidnight);
-        startOfCurrentWeek.setDate(todayAtMidnight.getDate() - daysSinceMonday);
-        startOfCurrentWeek.setHours(0, 0, 0, 0); // Ensure it's at the very start of Monday
-
-        // Ensure last_reset_date is a valid Date object, initialize if not
-        if (!usuario.last_reset_date || isNaN(usuario.last_reset_date.getTime())) {
-            usuario.last_reset_date = new Date(); // Set to current date if invalid or missing
-        }
-        
-        // If last_reset_date is BEFORE the start of the current week (Monday), it's time for a reset
-        if (usuario.last_reset_date < startOfCurrentWeek) {
-            console.log(`Resetting weekly total for user ${usuario.nombre}. Old total: ${usuario.total_pomodoro_minutes}`);
-            usuario.total_pomodoro_minutes = 0; // Reset total minutes for the new week
-            usuario.last_reset_date = now; // Update reset date to the current date/time
-            await usuario.save(); // Save the reset state to the database
-            console.log(`New total: ${usuario.total_pomodoro_minutes}, New reset date: ${usuario.last_reset_date}`);
-        }
-        // --- END WEEKLY RESET LOGIC ---
-
-        res.json({
-            nombre: usuario.nombre,
-            total_pomodoro_minutes: usuario.total_pomodoro_minutes, // Will be the potentially reset value
-            weekly_goal: usuario.weekly_goal,
-            xp: usuario.xp,
-            last_reset_date: usuario.last_reset_date // Send back last reset date for client-side checks
-        });
-    } catch (error) {
-        console.error('Error al obtener datos del usuario:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor.' });
     }
+
+    res.json({
+        nombre: usuario.nombre,
+        total_pomodoro_minutes: usuario.total_pomodoro_minutes, // Send potentially reset value
+        weekly_goal: usuario.weekly_goal,
+        xp: usuario.xp,
+        last_reset_date: usuario.last_reset_date // Send the last reset date
+    });
 });
 
 // --- SAVE WEEKLY GOAL ---
+// MODIFIED: Now expects userId in body and finds by _id
 app.post('/api/user/save-goals', async (req, res) => {
-    const { userId, weekly_goal } = req.body;
+    const { userId, weekly_goal } = req.body; // Expects userId
 
-    if (!userId) {
-        return res.status(400).json({ mensaje: 'ID de usuario requerido.' });
+    const usuario = await Usuario.findById(userId); // Find user by MongoDB _id
+    if (!usuario) {
+        return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
-    if (typeof weekly_goal !== 'number' || isNaN(weekly_goal) || weekly_goal < 0) {
-        return res.status(400).json({ mensaje: 'Meta semanal inválida.' });
-    }
+
+    usuario.weekly_goal = weekly_goal;
 
     try {
-        const usuario = await Usuario.findById(userId);
-
-        if (!usuario) {
-            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
-        }
-
-        usuario.weekly_goal = weekly_goal;
         await usuario.save();
-
         res.json({
             mensaje: 'Objetivo semanal guardado con éxito',
-            total_pomodoro_minutes: usuario.total_pomodoro_minutes,
             weekly_goal: usuario.weekly_goal,
-            xp: usuario.xp
+            total_pomodoro_minutes: usuario.total_pomodoro_minutes, // Include current total minutes
+            xp: usuario.xp // Include current XP
         });
     } catch (error) {
-        console.error('Error al guardar objetivos:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor.' });
+        console.error('Error al guardar objetivo semanal:', error);
+        res.status(500).json({ mensaje: 'Error interno del servidor al guardar objetivo.' });
     }
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
