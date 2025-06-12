@@ -232,18 +232,49 @@ async function saveWeeklyGoals(event) {
 
 // Function to update the progress bar
 function updateProgressBar() {
-    const percentage = weeklyStudyGoals > 0 ? (totalPomodoroMinutes / weeklyStudyGoals) * 100 : 0;
-    const clampedPercentage = Math.min(percentage, 100); // Cap at 100%
+    const progressBarFill = document.getElementById('progress-bar-fill');
+    const progressBarText = document.getElementById('progress-bar-text');
 
+    console.log('--- updateProgressBar called ---');
+    console.log('global totalPomodoroMinutes:', totalPomodoroMinutes);
+    console.log('global weeklyStudyGoals:', weeklyStudyGoals);
+    console.log('progressBarFill element (should NOT be null):', progressBarFill);
+    console.log('progressBarText element (should NOT be null):', progressBarText);
+
+    let percentage = 0;
+    let goalHours = (weeklyStudyGoals / 60);
+    let currentHours = (totalPomodoroMinutes / 60);
+
+    if (goalHours > 0) {
+        percentage = (currentHours / goalHours) * 100;
+        if (percentage > 100) percentage = 100; // Cap at 100%
+    }
+
+    console.log('Calculated currentHours:', currentHours);
+    console.log('Calculated goalHours:', goalHours);
+    console.log('Calculated percentage:', percentage);
+
+
+    // Update the width of the fill bar
     if (progressBarFill) {
-        progressBarFill.style.width = `${clampedPercentage}%`;
+        progressBarFill.style.width = `${percentage.toFixed(1)}%`;
+        console.log('Setting progressBarFill width to:', `${percentage.toFixed(1)}%`);
+    } else {
+        console.error('ERROR: progressBarFill element not found in DOM!');
     }
-    if (progressPercentageDisplay) {
-        progressPercentageDisplay.textContent = `${Math.round(clampedPercentage)}%`; // Display rounded percentage
+
+    // Update the text display
+    if (progressBarText) {
+        progressBarText.textContent = `${currentHours.toFixed(1)} / ${goalHours.toFixed(1)} horas`;
+        console.log('Setting progressBarText content to:', `${currentHours.toFixed(1)} / ${goalHours.toFixed(1)} horas`);
+    } else {
+        console.error('ERROR: progressBarText element not found in DOM!');
     }
-    if (progressTextDisplay) {
-        // Display progress in hours, allowing for decimals if needed for small values
-        progressTextDisplay.textContent = `${(totalPomodoroMinutes / 60).toFixed(1)} / ${(weeklyStudyGoals / 60).toFixed(0)} horas`;
+
+    // Update XP bubble
+    if (xpBubble) { // Make sure xpBubble is defined globally too, or define it here
+        xpBubble.textContent = `XP: ${xp}`;
+        console.log('Setting xpBubble content to:', `XP: ${xp}`);
     }
 }
 
