@@ -1,137 +1,117 @@
-const bcrypt = require('bcryptjs');
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
+const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
-const DATA_FILE = path.join(__dirname, 'usuarios.json');
-
 app.use(cors());
 app.use(express.json());
 
-// Load users data or initialize
-let usuarios = [];
-if (fs.existsSync(DATA_FILE)) {
-    try {
-        usuarios = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-    } catch (err) {
-        console.error('Failed to parse usuarios.json, starting fresh or handling corrupt data.');
-        usuarios = [];
-    }
-}
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Conectado a MongoDB'))
+    .catch(err => console.error('Error de conexión a MongoDB:', err));
 
-// Helper: Save usuarios to file
-function saveUsuarios() {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(usuarios, null, 2));
-}
+const UsuarioSchema = new mongoose.Schema({
+    nombre: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    total_pomodoro_minutes: { type: Number, default: 0 },
+    weekly_goal: { type: Number, default: 0 }
+});
+
+const Usuario = mongoose.model('Usuario', UsuarioSchema);
 
 // --- REGISTER USER ---
-app.post('/api/usuarios', (req, res) => {
+app.post('/api/usuarios', async (req, res) => {
     const { nombre, password } = req.body;
+
     if (!nombre || !password) {
         return res.status(400).json({ mensaje: 'Nombre y contraseña son requeridos.' });
     }
 
-    if (usuarios.find(u => u.nombre === nombre)) {
+    const existingUser = await Usuario.findOne({ nombre });
+    if (existingUser) {
         return res.status(400).json({ mensaje: 'El usuario ya existe' });
     }
 
-    // 🔐 Encriptar contraseña
-    const bcrypt = require('bcryptjs');
-    const hashedPassword = bcrypt.hashSync(password, 10); // 10 es el nivel de seguridad
+    const hashedPassword = bcrypt.hashSync(password, 10);
 
-    const usuarioObj = {
-        id: Date.now().toString(),
+    const nuevoUsuario = new Usuario({
         nombre,
-        password: hashedPassword,
-        total_pomodoro_minutes: 0,
-        weekly_goal: 0
-    };
-    usuarios.push(usuarioObj);
-    saveUsuarios();
-    res.json({ mensaje: 'Usuario registrado con éxito', userId: usuarioObj.id });
+        password: hashedPassword
+    });
+
+    await nuevoUsuario.save();
+
+    res.json({ mensaje: 'Usuario registrado con éxito', userId: nuevoUsuario._id });
 });
 
-
 // --- LOGIN USER ---
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { nombre, password } = req.body;
+
     if (!nombre || !password) {
         return res.status(400).json({ mensaje: 'Nombre y contraseña son requeridos.' });
     }
 
-    const usuario = usuarios.find(u => u.nombre === nombre);
+    const usuario = await Usuario.findOne({ nombre });
     if (!usuario) {
         return res.status(401).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    // 🔐 Comparar la contraseña encriptada
-    const bcrypt = require('bcryptjs');
     const passwordMatch = bcrypt.compareSync(password, usuario.password);
     if (!passwordMatch) {
         return res.status(401).json({ mensaje: 'Credenciales incorrectas' });
     }
 
-    res.json({ mensaje: 'Login exitoso', userId: usuario.id, nombre: usuario.nombre });
+    res.json({ mensaje: 'Login exitoso', userId: usuario._id, nombre: usuario.nombre });
 });
 
-
 // --- ADD POMODORO TIME ---
-app.post('/api/pomodoro/add-time', (req, res) => {
-    const { userId, minutesToAdd } = req.body;
-    if (!userId || typeof minutesToAdd !== 'number' || minutesToAdd < 0) {
-        return res.status(400).json({ mensaje: 'Parámetros inválidos' });
-    }
-    const usuario = usuarios.find(u => u.id === userId);
+app.post('/api/pomodoro/add-time', async (req, res) => {
+    const { nombre, minutes } = req.body;
+
+    const usuario = await Usuario.findOne({ nombre });
     if (!usuario) {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
-    usuario.total_pomodoro_minutes += minutesToAdd;
-    saveUsuarios();
-    res.json({ mensaje: 'Tiempo de Pomodoro actualizado', totalPomodoroMinutes: usuario.total_pomodoro_minutes });
+
+    usuario.total_pomodoro_minutes += minutes;
+    await usuario.save();
+
+    res.json({ mensaje: 'Tiempo actualizado con éxito', total: usuario.total_pomodoro_minutes });
 });
 
 // --- GET USER DATA ---
-app.get('/api/user/data', (req, res) => {
-    const userId = req.query.userId; // Expect userId in query for demo
-    if (!userId) {
-        return res.status(400).json({ mensaje: 'userId requerido' });
-    }
-    const usuario = usuarios.find(u => u.id === userId);
+app.post('/api/user/data', async (req, res) => {
+    const { nombre } = req.body;
+
+    const usuario = await Usuario.findOne({ nombre });
     if (!usuario) {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
+
     res.json({
-        totalPomodoroMinutes: usuario.total_pomodoro_minutes,
-        // MODIFICATION: Return single weekly_goal
-        weeklyGoal: usuario.weekly_goal
+        nombre: usuario.nombre,
+        total_pomodoro_minutes: usuario.total_pomodoro_minutes,
+        weekly_goal: usuario.weekly_goal
     });
 });
 
-// --- SAVE USER GOALS ---
-app.post('/api/user/save-goals', (req, res) => {
-    const { userId, totalHours } = req.body; // MODIFICATION: Expect totalHours
-    if (!userId || typeof totalHours !== 'number' || totalHours < 0) {
-        return res.status(400).json({ mensaje: 'Parámetros inválidos (userId y totalHours como número positivo requeridos).' });
-    }
-    const usuario = usuarios.find(u => u.id === userId);
+// --- SAVE WEEKLY GOAL ---
+app.post('/api/user/save-goals', async (req, res) => {
+    const { nombre, weekly_goal } = req.body;
+
+    const usuario = await Usuario.findOne({ nombre });
     if (!usuario) {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
-    // Convert hours to minutes for storage
-    usuario.weekly_goal = totalHours * 60; // MODIFICATION: Store as single weekly_goal
-    saveUsuarios();
-    res.json({ mensaje: 'Objetivo semanal guardado correctamente', weeklyGoal: usuario.weekly_goal });
+
+    usuario.weekly_goal = weekly_goal;
+    await usuario.save();
+
+    res.json({ mensaje: 'Meta semanal actualizada con éxito' });
 });
 
-// Fallback route for unsupported endpoints
-app.use((req, res) => {
-    res.status(404).json({ mensaje: 'Endpoint no encontrado' });
-});
-
-// Start server
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
