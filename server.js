@@ -17,11 +17,22 @@ const UsuarioSchema = new mongoose.Schema({
     password: { type: String, required: true },
     total_pomodoro_minutes: { type: Number, default: 0 },
     weekly_goal: { type: Number, default: 0 },
-    xp: { type: Number, default: 0 }, // NEW: Add XP field
-    last_reset_date: { type: Date, default: Date.now } // NEW: Add last reset date
+    xp: { type: Number, default: 0 }, // XP field
+    last_reset_date: { type: Date, default: Date.now }
+    // You can add a field to track purchased rewards if needed:
+    // purchased_rewards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reward' }]
 });
 
 const Usuario = mongoose.model('Usuario', UsuarioSchema);
+
+// NEW: Reward Schema and Model
+const RewardSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    cost: { type: Number, required: true, min: 0 }
+});
+
+const Reward = mongoose.model('Reward', RewardSchema);
+
 
 // --- REGISTER USER ---
 app.post('/api/usuarios', async (req, res) => {
@@ -37,43 +48,36 @@ app.post('/api/usuarios', async (req, res) => {
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
-    const nuevoUsuario = new Usuario({
-        nombre,
-        password: hashedPassword,
-        total_pomodoro_minutes: 0,
-        weekly_goal: 0,
-        xp: 0, // Initialize XP for new user
-        last_reset_date: new Date() // Set initial reset date
-    });
+    const nuevoUsuario = new Usuario({ nombre, password: hashedPassword });
 
     try {
         await nuevoUsuario.save();
-        res.status(201).json({ mensaje: 'Usuario registrado con éxito', userId: nuevoUsuario._id });
+        res.status(201).json({ mensaje: 'Usuario registrado con éxito' });
     } catch (error) {
         console.error('Error al registrar usuario:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor al registrar usuario.' });
+        res.status(500).json({ mensaje: 'Error al registrar usuario.' });
     }
 });
 
-// --- LOGIN USER ---
+// --- LOGIN ---
 app.post('/api/login', async (req, res) => {
     const { nombre, password } = req.body;
 
     const usuario = await Usuario.findOne({ nombre });
     if (!usuario) {
-        return res.status(400).json({ mensaje: 'Credenciales incorrectas' });
+        return res.status(401).json({ mensaje: 'Credenciales incorrectas' });
     }
 
     const isMatch = bcrypt.compareSync(password, usuario.password);
     if (!isMatch) {
-        return res.status(400).json({ mensaje: 'Credenciales incorrectas' });
+        return res.status(401).json({ mensaje: 'Credenciales incorrectas' });
     }
 
-    res.json({ mensaje: 'Inicio de sesión exitoso', userId: usuario._id, nombre: usuario.nombre });
+    res.json({ mensaje: 'Inicio de sesión exitoso', nombre: usuario.nombre, userId: usuario._id });
 });
 
 // --- ADD POMODORO TIME ---
-// MODIFIED: Now expects userId in body and finds by _id
+// MODIFIED: Now expects userId in body and finds by _id, also updates XP
 app.post('/api/pomodoro/add-time', async (req, res) => {
     const { userId, minutes } = req.body; // Expects userId
 
@@ -83,25 +87,26 @@ app.post('/api/pomodoro/add-time', async (req, res) => {
     }
 
     usuario.total_pomodoro_minutes += minutes;
-    usuario.xp += minutes; // Add XP based on minutes studied (1 XP per minute)
+    usuario.xp += minutes; // Assuming 1 XP per minute of Pomodoro
+    // You can adjust XP calculation (e.g., 20 XP per completed Pomodoro)
 
     try {
         await usuario.save();
         res.json({
             mensaje: 'Tiempo y XP actualizados con éxito',
             total_pomodoro_minutes: usuario.total_pomodoro_minutes,
-            weekly_goal: usuario.weekly_goal, // Return weekly_goal for frontend consistency
-            xp: usuario.xp // Return updated XP
+            weekly_goal: usuario.weekly_goal, // Send back current weekly goal
+            xp: usuario.xp // Send back updated XP
         });
     } catch (error) {
         console.error('Error al agregar tiempo de Pomodoro:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor al actualizar tiempo.' });
+        res.status(500).json({ mensaje: 'Error al agregar tiempo de Pomodoro.' });
     }
 });
 
 // --- GET USER DATA ---
-// MODIFIED: Now is a GET request and takes userId from query params
-app.get('/api/user/data', async (req, res) => {
+// MODIFIED: Now expects userId in query params and finds by _id, includes XP and last_reset_date
+app.get('/api/user/data', async (req, res) => { // Changed to GET
     const { userId } = req.query; // Get userId from query parameters
 
     const usuario = await Usuario.findById(userId); // Find user by MongoDB _id
@@ -109,28 +114,21 @@ app.get('/api/user/data', async (req, res) => {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    // Weekly reset logic for total_pomodoro_minutes (Only resets if it's Monday and not reset yet this week)
+    // Weekly reset logic (moved from client-side for robustness)
     const today = new Date();
-    // Get current day of week (0=Sunday, 1=Monday, ..., 6=Saturday)
-    const currentDayOfWeek = today.getDay(); 
+    const lastReset = new Date(usuario.last_reset_date);
 
-    // Calculate the start of the current week (Monday at 00:00:00)
-    const startOfCurrentWeek = new Date(today);
-    // Adjust to Monday: if today is Sunday (0), subtract 6 days; otherwise, subtract (day - 1) days.
-    startOfCurrentWeek.setDate(today.getDate() - (currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1));
-    startOfCurrentWeek.setHours(0, 0, 0, 0); // Set time to beginning of the day
+    // Check if it's a new week (e.g., if current Monday is after last reset Monday)
+    // This assumes a week starts on Monday (getDay() === 1)
+    const isNewWeek = today.getDay() === 1 && (today.getDate() !== lastReset.getDate() || today.getMonth() !== lastReset.getMonth() || today.getFullYear() !== lastReset.getFullYear());
 
-    let total_pomodoro_minutes = usuario.total_pomodoro_minutes;
-    let last_reset_date = usuario.last_reset_date || startOfCurrentWeek; // Ensure last_reset_date exists
-
-    // If it's Monday and the last reset happened *before* the start of the current week (i.e., last week or earlier)
-    if (currentDayOfWeek === 1 && new Date(last_reset_date) < startOfCurrentWeek) {
-        total_pomodoro_minutes = 0; // Reset total minutes for the new week
-        usuario.total_pomodoro_minutes = 0; // Update in DB
-        usuario.last_reset_date = today; // Update last reset date to today's date
+    if (isNewWeek && usuario.total_pomodoro_minutes > 0) { // Only reset if there was activity last week
+        console.log(`Resetting total_pomodoro_minutes for ${usuario.nombre}. Old value: ${usuario.total_pomodoro_minutes}`);
+        usuario.total_pomodoro_minutes = 0; // Reset weekly minutes
+        usuario.last_reset_date = today; // Update last reset date to today
         try {
-            await usuario.save(); // Save the reset state to DB
-            console.log(`Weekly reset for user ${usuario.nombre}. total_pomodoro_minutes reset to 0.`);
+            await usuario.save();
+            console.log(`Weekly reset complete for ${usuario.nombre}.`);
         } catch (saveError) {
             console.error('Error saving weekly reset:', saveError);
         }
@@ -140,7 +138,7 @@ app.get('/api/user/data', async (req, res) => {
         nombre: usuario.nombre,
         total_pomodoro_minutes: usuario.total_pomodoro_minutes, // Send potentially reset value
         weekly_goal: usuario.weekly_goal,
-        xp: usuario.xp,
+        xp: usuario.xp, // Include XP
         last_reset_date: usuario.last_reset_date // Send the last reset date
     });
 });
@@ -167,7 +165,93 @@ app.post('/api/user/save-goals', async (req, res) => {
         });
     } catch (error) {
         console.error('Error al guardar objetivo semanal:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor al guardar objetivo.' });
+        res.status(500).json({ mensaje: 'Error al guardar objetivo. Intenta de nuevo.' });
+    }
+});
+
+
+// ===========================================
+// NEW API Endpoints for XP Shop Rewards
+// ===========================================
+
+// GET all rewards
+app.get('/api/rewards', async (req, res) => {
+    try {
+        const rewards = await Reward.find({});
+        res.json(rewards);
+    } catch (error) {
+        console.error('Error fetching rewards:', error);
+        res.status(500).json({ message: 'Error al obtener recompensas.' });
+    }
+});
+
+// POST a new reward
+app.post('/api/rewards', async (req, res) => {
+    const { name, cost } = req.body;
+
+    if (!name || cost === undefined || cost < 0) {
+        return res.status(400).json({ message: 'Nombre y costo válidos son requeridos para la recompensa.' });
+    }
+
+    const newReward = new Reward({ name, cost });
+    try {
+        await newReward.save();
+        res.status(201).json({ message: 'Recompensa añadida con éxito', reward: newReward });
+    } catch (error) {
+        console.error('Error adding new reward:', error);
+        if (error.code === 11000) { // Duplicate key error
+            return res.status(409).json({ message: 'Ya existe una recompensa con este nombre.' });
+        }
+        res.status(500).json({ message: 'Error al añadir la recompensa.' });
+    }
+});
+
+// POST to purchase a reward (deduct XP)
+app.post('/api/user/purchase-reward', async (req, res) => {
+    const { userId, rewardId, cost } = req.body;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        const usuario = await Usuario.findById(userId).session(session);
+        if (!usuario) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        if (usuario.xp < cost) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(400).json({ message: 'XP insuficiente para comprar esta recompensa.' });
+        }
+
+        // Optional: Check if reward exists (good practice but not strictly necessary if client sends correct ID)
+        const reward = await Reward.findById(rewardId).session(session);
+        if (!reward) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(404).json({ message: 'Recompensa no encontrada.' });
+        }
+
+        usuario.xp -= cost; // Deduct XP
+
+        // Optional: Add reward to user's purchased_rewards array
+        // if you uncommented purchased_rewards in UsuarioSchema
+        // usuario.purchased_rewards.push(reward._id);
+
+        await usuario.save({ session });
+        await session.commitTransaction();
+        session.endSession();
+
+        res.json({ message: 'Recompensa comprada con éxito.', newXp: usuario.xp });
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error('Error purchasing reward:', error);
+        res.status(500).json({ message: 'Error al procesar la compra.' });
     }
 });
 

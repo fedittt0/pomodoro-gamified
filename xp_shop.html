@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda XP</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+  <nav role="navigation" aria-label="Primary Navigation" class="nav">
+    <div class="nav-container">
+      <a href="index.html" class="logo" aria-label="Homepage logo placeholder">Pomodoro</a>
+      <ul class="menu" role="menubar">
+        <li role="none"><a role="menuitem" href="xp_shop.html" tabindex="0">Tienda XP</a></li>
+        <li role="none"><a role="menuitem" href="#" tabindex="0">Amigos</a></li>
+      </ul>
+      <div id="xp-bubble" class="xp-bubble" aria-label="Current Experience Points">XP: 0</div>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="greeting-container" aria-live="polite"></div>
+
+    <div class="main-content">
+      <main class="page-container" role="main" aria-label="XP Shop">
+        <section class="xp-shop-section">
+          <h2>Tienda de Recompensas XP</h2>
+          <p class="section-description">¡Gasta tu XP ganado con esfuerzo en estas increíbles recompensas!</p>
+
+          <div class="add-reward-button-container">
+            <div id="add-reward-button" class="add-reward-button" role="button" aria-label="Add new reward">
+                +
+            </div>
+            <p>Añadir Nueva Recompensa</p>
+          </div>
+
+          <div id="rewards-container" class="rewards-container">
+            </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="addRewardModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="addRewardModalTitle">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h3 id="addRewardModalTitle">Añadir Nueva Recompensa</h3>
+      <div class="form-group">
+        <label for="reward-name-input">Nombre de la Recompensa:</label>
+        <input type="text" id="reward-name-input" placeholder="Ej: Café gratis, 10 min de YouTube">
+      </div>
+      <div class="form-group">
+        <label for="reward-cost-input">Costo en XP:</label>
+        <input type="number" id="reward-cost-input" value="10" min="0">
+        <button id="add-10-xp-btn">+10 XP</button>
+      </div>
+      <button id="save-reward-btn">Guardar Recompensa</button>
+    </div>
+  </div>
+
+
+  <script src="xp_shop.js"></script>
+  <script src="script.js"></script> </body>
+</html>

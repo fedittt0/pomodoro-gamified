@@ -597,3 +597,255 @@ html, body {
         transform: scale(1);
     }
 }
+
+/* ===========================
+   XP Shop Styles
+   =========================== */
+.xp-shop-section {
+    background-color: var(--color-bg);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    text-align: center;
+    max-width: 800px; /* Adjust as needed */
+    margin: 2rem auto;
+}
+
+.xp-shop-section h2 {
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.xp-shop-section .section-description {
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+}
+
+.add-reward-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.add-reward-button {
+    width: 60px; /* Soft-edged rectangle size */
+    height: 60px;
+    background-color: #e0e0e0; /* Grey color */
+    border-radius: 15px; /* Soft edges */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #6b7280; /* Darker grey for plus sign */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.add-reward-button:hover {
+    background-color: #d0d0d0;
+    transform: scale(1.05);
+}
+
+.add-reward-button-container p {
+    margin-top: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.rewards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.reward-item {
+    background-color: #f9fafb;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reward-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.reward-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.8rem;
+    text-align: center;
+}
+
+.reward-cost {
+    font-size: 1.1rem;
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.reward-item .buy-reward-btn {
+    background-color: var(--color-accent);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 1rem; /* Slightly less rounded than main elements */
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.reward-item .buy-reward-btn:hover {
+    background-color: var(--color-accent-hover);
+}
+
+.reward-item .buy-reward-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Modal styles (re-using existing or adding new) */
+/* Ensure you have basic modal styles defined in estilos.css, if not, add these: */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-content .close-button {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-content .close-button:hover,
+.modal-content .close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content h3 {
+    color: var(--color-text-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.modal-content .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.modal-content .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.modal-content .form-group input[type="text"],
+.modal-content .form-group input[type="number"] {
+    width: calc(100% - 110px); /* Adjust width for +10 button */
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    -moz-appearance: textfield; /* Hide arrows for Firefox */
+}
+
+.modal-content input[type="number"]::-webkit-outer-spin-button,
+.modal-content input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.modal-content #add-10-xp-btn {
+    width: 90px;
+    padding: 10px 5px;
+    background-color: #6c757d; /* A different grey for this button */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content #add-10-xp-btn:hover {
+    background-color: #5a6268;
+}
+
+.modal-content button#save-reward-btn {
+    background-color: var(--color-accent);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    width: auto;
+    margin-top: 1rem;
+}
+
+.modal-content button#save-reward-btn:hover {
+    background-color: var(--color-accent-hover);
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments for XP Shop */
+@media (max-width: 768px) {
+    .xp-shop-section {
+        padding: 1.5rem;
+    }
+    .rewards-container {
+        grid-template-columns: 1fr; /* Stack rewards vertically on small screens */
+    }
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    .modal-content .form-group input[type="text"],
+    .modal-content .form-group input[type="number"] {
+        width: calc(100% - 70px); /* Adjust for smaller +10 button */
+    }
+    .modal-content #add-10-xp-btn {
+        width: 60px; /* Smaller button */
+        padding: 8px;
+    }
+}
