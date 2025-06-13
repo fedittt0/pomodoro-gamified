@@ -1,23 +1,25 @@
-/* estilos.css - Modern, Minimalist, with Red Highlights */
+/* estilos.css - Sleek Minimalist with Red Accent Concept */
 
-/* Import a clean, modern font - Poppins and Inter are good choices */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+/* Import modern fonts - Roboto for content, Montserrat for headings */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@500;600;700&display=swap');
 
 /* Define a consistent color palette and design variables */
 :root {
   /* Color Palette */
-  --color-bg-primary: #f8f9fa; /* Light grey/off-white for main backgrounds */
+  --color-bg-primary: #f2f4f8; /* Very light grey-blue for main backgrounds */
   --color-bg-secondary: #ffffff; /* Pure white for cards/sections */
-  --color-text-primary: #212529; /* Dark grey for main text and headings */
+  --color-text-primary: #343a40; /* Dark charcoal for main text and headings */
   --color-text-secondary: #6c757d; /* Medium grey for descriptions/less important text */
-  --color-accent: #e63946; /* Vibrant Red for highlights and active states */
-  --color-accent-hover: #d62839; /* Slightly darker red for hover effects */
+  --color-accent: #e63946; /* Vibrant Red */
+  --color-accent-hover: #c42735; /* Slightly darker red for hover effects */
   --color-success: #28a745; /* Green for success/positive feedback */
-  --color-success-light: #d4edda; /* Light green background for success */
+  --color-success-light: #e0f2e0; /* Very light green background */
   --color-error: #dc3545; /* Red for errors/alerts */
-  --color-error-light: #f8d7da; /* Light red background for errors */
-  --color-input-bg: #e9ecef; /* Light grey for input fields */
-  --color-border: #dee2e6; /* Light grey for borders */
+  --color-error-light: #fae0e0; /* Very light red background */
+  --color-input-bg: #f8f9fa; /* Off-white for input fields */
+  --color-border: #e9ecef; /* Light grey for subtle borders */
+  --color-shadow-light: rgba(0, 0, 0, 0.05); /* Lighter shadow for depth */
+  --color-shadow-medium: rgba(0, 0, 0, 0.1);
 
   /* Spacing & Sizing */
   --spacing-xs: 0.5rem;
@@ -27,20 +29,19 @@
   --spacing-xl: 3rem;
 
   /* Typography */
-  --font-family-primary: 'Inter', sans-serif;
-  --font-family-headings: 'Poppins', sans-serif;
+  --font-family-primary: 'Roboto', sans-serif;
+  --font-family-headings: 'Montserrat', sans-serif;
   --font-size-base: 1rem; /* 16px */
 
   /* Border Radius & Shadows */
-  --border-radius-sm: 0.5rem; /* For smaller elements like buttons */
-  --border-radius-md: 1rem; /* For cards/sections */
-  --border-radius-lg: 1.5rem; /* For prominent containers */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+  --border-radius-sm: 4px; /* Sharper edges, but still soft corners */
+  --border-radius-md: 8px; /* For cards/sections */
+  --border-radius-lg: 12px; /* For prominent containers */
+  --shadow-subtle: 0 2px 4px var(--color-shadow-light); /* Minimalist shadow */
+  --shadow-card: 0 4px 12px var(--color-shadow-medium); /* Deeper shadow for cards */
 
   /* Transitions */
-  --transition-speed: 0.3s ease-in-out;
+  --transition-speed: 0.25s ease-in-out;
 }
 
 /* Base Styles */
@@ -64,14 +65,14 @@ html, body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-headings);
   color: var(--color-text-primary);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   margin-bottom: var(--spacing-sm);
 }
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
+h1 { font-size: 2.8rem; }
+h2 { font-size: 2.2rem; }
+h3 { font-size: 1.8rem; }
+h4 { font-size: 1.4rem; }
 
 a {
   color: var(--color-accent);
@@ -93,18 +94,18 @@ button {
   color: var(--color-bg-secondary);
   background-color: var(--color-accent);
   transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-subtle);
 }
 
 button:hover:not(:disabled) {
   background-color: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 8px var(--color-shadow-medium);
 }
 
 button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-subtle);
 }
 
 button:disabled {
@@ -133,7 +134,7 @@ input[type="text"]:focus,
 input[type="number"]:focus,
 input[type="password"]:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.2); /* Soft red focus ring */
+  box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb, 230, 57, 70), 0.2); /* Soft red focus ring */
   outline: none;
 }
 
@@ -176,14 +177,14 @@ input[type="number"] {
 .page-container {
   background-color: var(--color-bg-secondary);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-card);
   padding: var(--spacing-xl);
-  max-width: 900px;
+  max-width: 960px; /* Slightly wider */
   width: 100%;
-  margin: var(--spacing-md) auto; /* Center with vertical margin */
+  margin: var(--spacing-md) auto;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl); /* Space between sections */
+  gap: var(--spacing-xl); /* Space between major sections */
 }
 
 /* Section specific styling within page-container */
@@ -191,24 +192,25 @@ input[type="number"] {
     background-color: var(--color-bg-primary); /* Slightly different bg for inner sections */
     border-radius: var(--border-radius-md);
     padding: var(--spacing-lg);
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.05); /* Subtle inner shadow */
+    box-shadow: inset 0 0 5px var(--color-shadow-light); /* Subtle inner shadow */
     text-align: center;
+    border: 1px solid var(--color-border); /* Added subtle border for definition */
 }
 
 .page-container section h2 {
-    margin-bottom: var(--spacing-sm); /* Spacing between section title and intro text */
+    margin-bottom: var(--spacing-sm);
 }
 
 .page-container section .section-description {
     color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-lg); /* More space below descriptions */
+    margin-bottom: var(--spacing-lg);
 }
 
 
 /* --- Navigation Bar --- */
 .nav {
     background-color: var(--color-bg-secondary);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-subtle);
     padding: 0 var(--spacing-lg);
     position: fixed;
     top: 0;
@@ -223,10 +225,11 @@ input[type="number"] {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    height: 5rem; /* Consistent nav height */
+    height: 5rem;
 }
 
 .nav .logo {
+    font-family: var(--font-family-headings);
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--color-accent);
@@ -253,14 +256,14 @@ input[type="number"] {
     color: var(--color-accent);
 }
 
-/* Subtle underline effect on hover */
+/* More prominent underline effect on hover */
 .nav .menu li a::after {
     content: '';
     position: absolute;
     width: 0;
-    height: 2px;
-    bottom: -3px; /* Position below text */
-    left: 50%; /* Start from center */
+    height: 3px;
+    bottom: -5px;
+    left: 50%;
     background: var(--color-accent);
     transition: width var(--transition-speed), left var(--transition-speed);
 }
@@ -272,14 +275,14 @@ input[type="number"] {
 
 /* XP Bubble */
 .xp-bubble {
-    background-color: var(--color-accent); /* Red accent for XP */
+    background-color: var(--color-accent);
     color: var(--color-bg-secondary);
     padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-lg); /* Very rounded capsule */
+    border-radius: var(--border-radius-lg);
     font-weight: 700;
     font-size: 0.9rem;
-    box-shadow: var(--shadow-sm);
-    animation: fadeIn 0.5s ease-out; /* Simple fade-in for visibility */
+    box-shadow: var(--shadow-subtle);
+    animation: fadeIn 0.5s ease-out;
 }
 
 
@@ -295,40 +298,42 @@ input[type="number"] {
 
 /* --- Pomodoro App Section --- */
 .pomodoro-app {
-    /* Styles are mostly inherited from .page-container section */
+    /* Inherits from .page-container section */
 }
 
 .clock-card {
     background-color: var(--color-bg-secondary);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
-    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-card);
+    padding: var(--spacing-xl);
     margin-bottom: var(--spacing-md);
-    display: inline-block; /* Shrink-wrap content */
+    display: inline-block;
+    border: 1px solid var(--color-border); /* Subtle border */
 }
 
 #timer-display {
-    font-size: 5rem;
+    font-family: var(--font-family-headings);
+    font-size: 5.5rem;
     font-weight: 700;
     color: var(--color-accent);
     margin: var(--spacing-sm) 0;
-    min-width: 250px;
+    min-width: 280px; /* Slightly larger timer area */
     display: block;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
 }
 
 #mode-label {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     color: var(--color-text-primary);
     margin-bottom: var(--spacing-md);
     display: block;
 }
 
 .break-label {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--color-text-secondary);
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-xs);
     min-height: 1.2em;
 }
 
@@ -336,17 +341,17 @@ input[type="number"] {
     display: flex;
     justify-content: center;
     gap: var(--spacing-md);
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-lg); /* More space below timer */
 }
 
 .stats {
     font-size: var(--font-size-base);
     color: var(--color-text-secondary);
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-lg);
 }
 
 .stats p {
-    margin: var(--spacing-xs) 0; /* Space between stat lines */
+    margin: var(--spacing-xs) 0;
 }
 
 #pomodoro-count {
@@ -354,10 +359,10 @@ input[type="number"] {
     color: var(--color-accent);
 }
 
-/* Pomodoro states backgrounds */
-body.pomodoro-mode { background-color: var(--color-bg-primary); } /* Default */
-body.short-break-mode { background-color: #fcebeb; } /* Light red/pinkish */
-body.long-break-mode { background-color: #e6f7ea; } /* Light green */
+/* Pomodoro states backgrounds (slightly more subtle) */
+body.pomodoro-mode { background-color: var(--color-bg-primary); }
+body.short-break-mode { background-color: #fef7f7; } /* Very light red */
+body.long-break-mode { background-color: #f7fef7; } /* Very light green */
 
 
 /* --- Weekly Study Goals Section --- */
@@ -381,42 +386,35 @@ body.long-break-mode { background-color: #e6f7ea; } /* Light green */
 .progress-bar-container {
     background-color: var(--color-border);
     border-radius: var(--border-radius-md);
-    height: 25px;
+    height: 28px; /* Slightly taller bar */
     overflow: hidden;
     margin-top: var(--spacing-sm);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: inset 0 1px 3px var(--color-shadow-light);
+    position: relative; /* For text overlay */
 }
 
 .progress-bar-fill {
     height: 100%;
-    width: 0%; /* Initial state */
-    background-color: var(--color-success); /* Green for progress */
-    border-radius: var(--border-radius-md); /* Match container */
+    width: 0%;
+    background: linear-gradient(to right, var(--color-success), #4CAF50); /* Subtle gradient for fill */
+    border-radius: var(--border-radius-md);
     transition: width 0.5s var(--transition-speed);
 }
 
 .progress-percentage {
-    position: relative; /* For text overlay */
-    z-index: 1; /* Ensure text is above fill */
-    display: block; /* Take full width */
-    text-align: center;
-    line-height: 25px; /* Vertically center text */
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--color-text-primary); /* Text color over bar */
-    /* Adjustments for text position relative to fill */
-    mix-blend-mode: difference; /* Or color: white if text is over dark fill */
-    /* For simplicity, we keep text outside the fill div in HTML */
-    position: absolute; /* Position relative to container */
-    width: 100%;
+    position: absolute;
     top: 0;
     left: 0;
-}
-.progress-bar-container span { /* Actual text display for progress */
-    margin-top: var(--spacing-sm);
-    display: block;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.95rem;
-    color: var(--color-text-primary);
+    font-weight: 600;
+    color: var(--color-text-primary); /* Default text color */
+    /* Add a slight text shadow for readability over the fill */
+    text-shadow: 0 0 2px var(--color-bg-secondary);
 }
 
 
@@ -426,14 +424,14 @@ body.auth-page {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef); /* Soft, light gradient */
+    background: linear-gradient(135deg, var(--color-bg-primary), #e9f0f8);
 }
 
 .auth-container {
     display: flex;
     background-color: var(--color-bg-secondary);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
     max-width: 900px;
     width: 90%;
@@ -450,12 +448,12 @@ body.auth-page {
 }
 
 .auth-left {
-    background-color: var(--color-bg-primary); /* Lighter background for left panel */
+    background-color: var(--color-bg-primary);
     border-right: 1px solid var(--color-border);
 }
 
 .auth-left h1 {
-    color: var(--color-accent); /* Highlight title with accent color */
+    color: var(--color-accent);
     margin-bottom: var(--spacing-md);
 }
 
@@ -464,13 +462,9 @@ body.auth-page {
     font-size: 1.1rem;
 }
 
-.auth-right {
-    /* Inherits from auth-container background */
-}
-
 .auth-form {
     width: 100%;
-    max-width: 350px; /* Constrain form width */
+    max-width: 380px; /* Slightly wider form */
 }
 
 .auth-form h2 {
@@ -494,8 +488,9 @@ body.auth-page {
     width: 100%;
     padding: var(--spacing-md) var(--spacing-lg);
     margin-top: var(--spacing-md);
-    border-radius: var(--border-radius-md); /* Slightly more rounded buttons */
+    border-radius: var(--border-radius-md);
     font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .toggle-link {
@@ -531,12 +526,6 @@ body.auth-page {
     border: 1px solid var(--color-error);
 }
 
-/* Keyframe for fade-in effect */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 
 /* --- XP Shop Section --- */
 .xp-shop-section {
@@ -547,28 +536,30 @@ body.auth-page {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: var(--spacing-xl); /* More space below add button section */
-    margin-top: var(--spacing-md); /* Space above this container */
+    margin-bottom: var(--spacing-xl);
+    margin-top: var(--spacing-md);
 }
 
 .add-reward-button {
-    width: 70px; /* Larger soft-edged square */
-    height: 70px;
-    background-color: #ced4da; /* Light grey */
-    border-radius: var(--border-radius-md); /* Soft edges */
+    width: 75px; /* Slightly larger */
+    height: 75px;
+    background-color: var(--color-input-bg); /* Use input background color for a lighter grey */
+    border: 1px dashed var(--color-border); /* Dashed border for a more minimalist feel */
+    border-radius: var(--border-radius-md);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3.5rem; /* Large plus sign */
-    color: var(--color-text-secondary); /* Darker grey for plus sign */
-    transition: background-color var(--transition-speed), transform 0.2s ease, box-shadow var(--transition-speed);
-    box-shadow: var(--shadow-sm);
+    font-size: 4rem; /* Larger plus sign */
+    color: var(--color-text-secondary);
+    transition: background-color var(--transition-speed), transform 0.2s ease, border-color var(--transition-speed);
+    box-shadow: var(--shadow-subtle);
 }
 
 .add-reward-button:hover {
-    background-color: #adb5bd; /* Slightly darker grey on hover */
-    transform: scale(1.05); /* Slight scale */
-    box-shadow: var(--shadow-md);
+    background-color: var(--color-border); /* Slightly darker grey on hover */
+    transform: scale(1.03); /* Subtle scale */
+    border-color: var(--color-accent); /* Red border on hover */
+    box-shadow: var(--shadow-medium);
 }
 
 .add-reward-button-container p {
@@ -579,56 +570,58 @@ body.auth-page {
 
 .rewards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjust card size */
-    gap: var(--spacing-lg); /* Space between reward cards */
-    margin-top: var(--spacing-lg); /* Space from above elements */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Adjust card size */
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
 }
 
 .reward-item {
     background-color: var(--color-bg-secondary);
     border-radius: var(--border-radius-md);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-subtle);
     padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-    border: 1px solid var(--color-border); /* Subtle border */
+    border: 1px solid var(--color-border);
 }
 
 .reward-item:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-card);
 }
 
 .reward-name {
-    font-size: 1.2rem;
+    font-family: var(--font-family-headings);
+    font-size: 1.3rem;
     font-weight: 600;
     color: var(--color-text-primary);
     margin-bottom: var(--spacing-xs);
 }
 
 .reward-cost {
-    font-size: 1.1rem;
-    color: var(--color-accent); /* Red for cost */
+    font-size: 1.2rem;
+    color: var(--color-accent);
     font-weight: 700;
     margin-bottom: var(--spacing-md);
 }
 
 .reward-item .buy-reward-btn {
-    width: 100%; /* Full width button in card */
-    padding: var(--spacing-xs) var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-sm);
     border-radius: var(--border-radius-sm);
-    font-size: 0.95rem;
-    background-color: var(--color-success); /* Green for buy button */
+    font-size: 1rem;
+    background-color: var(--color-success);
+    transition: background-color var(--transition-speed);
 }
 .reward-item .buy-reward-btn:hover:not(:disabled) {
-    background-color: #218838; /* Darker green */
+    background-color: #218838;
 }
 
 
-/* --- Modals (re-using general modal styles from previous versions) --- */
+/* --- Modals --- */
 .modal {
     display: none; /* Hidden by default; JS changes to 'flex' */
     position: fixed;
@@ -638,22 +631,34 @@ body.auth-page {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.6); /* Darker backdrop */
+    background-color: rgba(0,0,0,0.7); /* Darker, more opaque backdrop */
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0; /* For animation */
+    transition: opacity 0.3s ease-out;
+}
+
+.modal.show {
+    opacity: 1;
 }
 
 .modal-content {
     background-color: var(--color-bg-secondary);
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-card);
     position: relative;
     width: 90%;
-    max-width: 550px; /* Slightly larger modal */
+    max-width: 600px; /* Wider modal */
     text-align: center;
-    animation: fadeInScale 0.3s ease-out; /* Simple entry animation */
+    transform: translateY(-20px); /* For animation */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .modal-content h2, .modal-content h3 {
@@ -680,14 +685,14 @@ body.auth-page {
 
 /* Specific styling for the +10 XP button within the reward modal */
 .modal-content .form-group input[type="number"] {
-    width: calc(100% - 70px); /* Make space for the +10 XP button */
-    display: inline-block; /* Align with button */
+    width: calc(100% - 80px); /* Make space for the +10 XP button */
+    display: inline-block;
     vertical-align: middle;
 }
 
 .modal-content #add-10-xp-btn {
-    width: 60px; /* Fixed width for the +10 XP button */
-    padding: var(--spacing-xs); /* Smaller padding */
+    width: 70px; /* Fixed width for the +10 XP button */
+    padding: var(--spacing-xs);
     font-size: 0.85rem;
     margin-left: var(--spacing-sm);
     background-color: var(--color-text-secondary); /* Grey button */
@@ -698,14 +703,14 @@ body.auth-page {
 
 .modal-content #add-10-xp-btn:hover {
     background-color: #5a6268;
-    transform: none; /* No scale on this one */
+    transform: none;
     box-shadow: none;
 }
 
 .modal-content button#save-modal-goal-btn,
 .modal-content button#save-reward-btn {
-    width: auto; /* Auto width based on content */
-    margin-top: var(--spacing-lg); /* More space above the save button */
+    width: auto;
+    margin-top: var(--spacing-lg);
     padding: var(--spacing-sm) var(--spacing-lg);
     border-radius: var(--border-radius-md);
 }
@@ -730,7 +735,7 @@ body.auth-page {
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
     :root {
-        --font-size-base: 0.95rem;
+        --font-size-base: 0.9rem;
         --spacing-md: 1rem;
         --spacing-lg: 1.5rem;
         --spacing-xl: 2rem;
@@ -747,11 +752,11 @@ body.auth-page {
         margin-top: var(--spacing-sm);
     }
     .nav .menu li a::after {
-        display: none; /* Hide hover underline on small screens */
+        display: none;
     }
 
     .content-wrapper {
-        padding-top: 7rem; /* Adjust for taller nav */
+        padding-top: 7.5rem; /* Adjust for taller nav */
     }
 
     .main-content {
@@ -764,12 +769,12 @@ body.auth-page {
         gap: var(--spacing-lg);
     }
 
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.75rem; }
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.8rem; }
     h3 { font-size: 1.5rem; }
 
     #timer-display {
-        font-size: 4rem;
+        font-size: 4.5rem;
         min-width: unset;
     }
 
@@ -779,14 +784,14 @@ body.auth-page {
     }
     button {
         width: 100%;
-        max-width: 250px; /* Constrain button width */
-        margin: 0 auto; /* Center individual buttons */
+        max-width: 250px;
+        margin: 0 auto;
     }
 
     .auth-container {
         flex-direction: column;
         width: 95%;
-        padding: 0; /* Remove padding as inner sections will have it */
+        padding: 0;
     }
     .auth-left, .auth-right {
         padding: var(--spacing-lg);
@@ -797,7 +802,7 @@ body.auth-page {
     }
 
     .rewards-container {
-        grid-template-columns: 1fr; /* Stack rewards vertically on small screens */
+        grid-template-columns: 1fr;
     }
 
     .modal-content {
@@ -806,7 +811,7 @@ body.auth-page {
     }
 
     .modal-content .form-group input[type="number"] {
-        width: calc(100% - 60px); /* Slightly smaller button in modal for mobile */
+        width: calc(100% - 60px);
     }
     .modal-content #add-10-xp-btn {
         width: 50px;
