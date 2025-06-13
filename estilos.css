@@ -1,25 +1,25 @@
-/* estilos.css - Sleek Minimalist with Red Accent Concept */
+/* estilos.css - Soft Minimalist with Red Accent Concept */
 
-/* Import modern fonts - Roboto for content, Montserrat for headings */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@500;600;700&display=swap');
+/* Import modern fonts - Montserrat for headings, Lato for content (a bit softer than Roboto) */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@600;700&display=swap');
 
 /* Define a consistent color palette and design variables */
 :root {
-  /* Color Palette */
-  --color-bg-primary: #f2f4f8; /* Very light grey-blue for main backgrounds */
+  /* Color Palette - Softer Tones */
+  --color-bg-primary: #fbfbfc; /* Very light, warm off-white for main backgrounds */
   --color-bg-secondary: #ffffff; /* Pure white for cards/sections */
-  --color-text-primary: #343a40; /* Dark charcoal for main text and headings */
-  --color-text-secondary: #6c757d; /* Medium grey for descriptions/less important text */
-  --color-accent: #e63946; /* Vibrant Red */
-  --color-accent-hover: #c42735; /* Slightly darker red for hover effects */
-  --color-success: #28a745; /* Green for success/positive feedback */
-  --color-success-light: #e0f2e0; /* Very light green background */
-  --color-error: #dc3545; /* Red for errors/alerts */
-  --color-error-light: #fae0e0; /* Very light red background */
-  --color-input-bg: #f8f9fa; /* Off-white for input fields */
-  --color-border: #e9ecef; /* Light grey for subtle borders */
-  --color-shadow-light: rgba(0, 0, 0, 0.05); /* Lighter shadow for depth */
-  --color-shadow-medium: rgba(0, 0, 0, 0.1);
+  --color-text-primary: #333a40; /* Soft dark grey for main text and headings */
+  --color-text-secondary: #7b8590; /* Muted grey for descriptions/less important text */
+  --color-accent: #e63946; /* Vibrant Red (maintains punch) */
+  --color-accent-hover: #cc2f3b; /* Slightly darker red for hover effects */
+  --color-success: #3cb464; /* Soft green for success/positive feedback */
+  --color-success-light: #e6faed; /* Very light, soft green background */
+  --color-error: #e04a5a; /* Slightly softer red for errors/alerts */
+  --color-error-light: #fef0f2; /* Very light, soft red background */
+  --color-input-bg: #f5f7fa; /* Light, soft grey for input fields */
+  --color-border: #e8ebf0; /* Very light grey for subtle borders */
+  --color-shadow-light: rgba(0, 0, 0, 0.04); /* Extremely light, diffused shadow */
+  --color-shadow-medium: rgba(0, 0, 0, 0.08); /* Slightly more visible shadow for cards */
 
   /* Spacing & Sizing */
   --spacing-xs: 0.5rem;
@@ -29,19 +29,19 @@
   --spacing-xl: 3rem;
 
   /* Typography */
-  --font-family-primary: 'Roboto', sans-serif;
+  --font-family-primary: 'Lato', sans-serif;
   --font-family-headings: 'Montserrat', sans-serif;
   --font-size-base: 1rem; /* 16px */
 
-  /* Border Radius & Shadows */
-  --border-radius-sm: 4px; /* Sharper edges, but still soft corners */
-  --border-radius-md: 8px; /* For cards/sections */
-  --border-radius-lg: 12px; /* For prominent containers */
-  --shadow-subtle: 0 2px 4px var(--color-shadow-light); /* Minimalist shadow */
-  --shadow-card: 0 4px 12px var(--color-shadow-medium); /* Deeper shadow for cards */
+  /* Border Radius & Shadows - Increased for softer look */
+  --border-radius-sm: 8px; /* For smaller elements like buttons */
+  --border-radius-md: 16px; /* For cards/sections */
+  --border-radius-lg: 24px; /* For prominent containers */
+  --shadow-subtle: 0 4px 10px var(--color-shadow-light); /* Softer, wider subtle shadow */
+  --shadow-card: 0 8px 25px var(--color-shadow-medium); /* Diffused shadow for cards */
 
   /* Transitions */
-  --transition-speed: 0.25s ease-in-out;
+  --transition-speed: 0.3s ease-in-out;
 }
 
 /* Base Styles */
@@ -87,20 +87,20 @@ button {
   font-family: var(--font-family-primary);
   cursor: pointer;
   border: none;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-sm); /* Softer button corners */
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--color-bg-secondary);
   background-color: var(--color-accent);
   transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
-  box-shadow: var(--shadow-subtle);
+  box-shadow: var(--shadow-subtle); /* Softer button shadow */
 }
 
 button:hover:not(:disabled) {
   background-color: var(--color-accent-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px var(--color-shadow-medium);
+  transform: translateY(-3px); /* Slightly more pronounced hover effect */
+  box-shadow: 0 6px 15px var(--color-shadow-medium); /* Softer, larger hover shadow */
 }
 
 button:active:not(:disabled) {
@@ -122,7 +122,7 @@ input[type="password"] {
   width: 100%;
   padding: var(--spacing-sm);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-sm); /* Softer input corners */
   font-family: var(--font-family-primary);
   font-size: var(--font-size-base);
   color: var(--color-text-primary);
@@ -134,7 +134,7 @@ input[type="text"]:focus,
 input[type="number"]:focus,
 input[type="password"]:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb, 230, 57, 70), 0.2); /* Soft red focus ring */
+  box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb, 230, 57, 70), 0.2); /* Soft red focus ring */
   outline: none;
 }
 
@@ -176,25 +176,25 @@ input[type="number"] {
 
 .page-container {
   background-color: var(--color-bg-secondary);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--border-radius-lg); /* Very soft corners */
+  box-shadow: var(--shadow-card); /* Soft, diffused card shadow */
   padding: var(--spacing-xl);
-  max-width: 960px; /* Slightly wider */
+  max-width: 960px;
   width: 100%;
   margin: var(--spacing-md) auto;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl); /* Space between major sections */
+  gap: var(--spacing-xl); /* Generous space between major sections */
 }
 
 /* Section specific styling within page-container */
 .page-container section {
     background-color: var(--color-bg-primary); /* Slightly different bg for inner sections */
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-md); /* Soft corners for inner sections */
     padding: var(--spacing-lg);
-    box-shadow: inset 0 0 5px var(--color-shadow-light); /* Subtle inner shadow */
+    box-shadow: inset 0 0 8px var(--color-shadow-light); /* Softer inner shadow */
     text-align: center;
-    border: 1px solid var(--color-border); /* Added subtle border for definition */
+    border: 1px solid var(--color-border); /* Subtle border for definition */
 }
 
 .page-container section h2 {
@@ -278,7 +278,7 @@ input[type="number"] {
     background-color: var(--color-accent);
     color: var(--color-bg-secondary);
     padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-lg); /* Very rounded capsule */
     font-weight: 700;
     font-size: 0.9rem;
     box-shadow: var(--shadow-subtle);
@@ -303,7 +303,7 @@ input[type="number"] {
 
 .clock-card {
     background-color: var(--color-bg-secondary);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-lg); /* Soft card corners */
     box-shadow: var(--shadow-card);
     padding: var(--spacing-xl);
     margin-bottom: var(--spacing-md);
@@ -317,7 +317,7 @@ input[type="number"] {
     font-weight: 700;
     color: var(--color-accent);
     margin: var(--spacing-sm) 0;
-    min-width: 280px; /* Slightly larger timer area */
+    min-width: 280px;
     display: block;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
 }
@@ -341,7 +341,7 @@ input[type="number"] {
     display: flex;
     justify-content: center;
     gap: var(--spacing-md);
-    margin-top: var(--spacing-lg); /* More space below timer */
+    margin-top: var(--spacing-lg);
 }
 
 .stats {
@@ -359,10 +359,10 @@ input[type="number"] {
     color: var(--color-accent);
 }
 
-/* Pomodoro states backgrounds (slightly more subtle) */
+/* Pomodoro states backgrounds (even softer) */
 body.pomodoro-mode { background-color: var(--color-bg-primary); }
-body.short-break-mode { background-color: #fef7f7; } /* Very light red */
-body.long-break-mode { background-color: #f7fef7; } /* Very light green */
+body.short-break-mode { background-color: #fff9f9; } /* Very light red */
+body.long-break-mode { background-color: #f9fff9; } /* Very light green */
 
 
 /* --- Weekly Study Goals Section --- */
@@ -386,17 +386,17 @@ body.long-break-mode { background-color: #f7fef7; } /* Very light green */
 .progress-bar-container {
     background-color: var(--color-border);
     border-radius: var(--border-radius-md);
-    height: 28px; /* Slightly taller bar */
+    height: 30px; /* Taller bar for impact */
     overflow: hidden;
     margin-top: var(--spacing-sm);
-    box-shadow: inset 0 1px 3px var(--color-shadow-light);
-    position: relative; /* For text overlay */
+    box-shadow: inset 0 1px 4px var(--color-shadow-light); /* Softer inner shadow */
+    position: relative;
 }
 
 .progress-bar-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(to right, var(--color-success), #4CAF50); /* Subtle gradient for fill */
+    background: linear-gradient(to right, var(--color-success), #51d17d); /* Softer green gradient */
     border-radius: var(--border-radius-md);
     transition: width 0.5s var(--transition-speed);
 }
@@ -410,11 +410,10 @@ body.long-break-mode { background-color: #f7fef7; } /* Very light green */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--color-text-primary); /* Default text color */
-    /* Add a slight text shadow for readability over the fill */
-    text-shadow: 0 0 2px var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    text-shadow: 0 0 3px var(--color-bg-secondary); /* More pronounced text shadow for readability */
 }
 
 
@@ -424,13 +423,13 @@ body.auth-page {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--color-bg-primary), #e9f0f8);
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef); /* Light, gentle gradient */
 }
 
 .auth-container {
     display: flex;
     background-color: var(--color-bg-secondary);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-lg); /* Soft container corners */
     box-shadow: var(--shadow-card);
     overflow: hidden;
     max-width: 900px;
@@ -448,8 +447,8 @@ body.auth-page {
 }
 
 .auth-left {
-    background-color: var(--color-bg-primary);
-    border-right: 1px solid var(--color-border);
+    background-color: var(--color-bg-primary); /* Lighter background for left panel */
+    border-right: 1px solid var(--color-border); /* Subtle separator */
 }
 
 .auth-left h1 {
@@ -464,7 +463,7 @@ body.auth-page {
 
 .auth-form {
     width: 100%;
-    max-width: 380px; /* Slightly wider form */
+    max-width: 380px;
 }
 
 .auth-form h2 {
@@ -488,7 +487,7 @@ body.auth-page {
     width: 100%;
     padding: var(--spacing-md) var(--spacing-lg);
     margin-top: var(--spacing-md);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-md); /* Soft button corners */
     font-size: 1.1rem;
     font-weight: 600;
 }
@@ -541,23 +540,23 @@ body.auth-page {
 }
 
 .add-reward-button {
-    width: 75px; /* Slightly larger */
-    height: 75px;
-    background-color: var(--color-input-bg); /* Use input background color for a lighter grey */
-    border: 1px dashed var(--color-border); /* Dashed border for a more minimalist feel */
-    border-radius: var(--border-radius-md);
+    width: 80px; /* Even larger for impact */
+    height: 80px;
+    background-color: var(--color-input-bg);
+    border: 2px dashed var(--color-border); /* Slightly thicker dashed border */
+    border-radius: var(--border-radius-lg); /* Very soft, almost circular */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 4rem; /* Larger plus sign */
+    font-size: 4.5rem; /* Larger plus sign */
     color: var(--color-text-secondary);
-    transition: background-color var(--transition-speed), transform 0.2s ease, border-color var(--transition-speed);
+    transition: background-color var(--transition-speed), transform 0.2s ease, border-color var(--transition-speed), box-shadow var(--transition-speed);
     box-shadow: var(--shadow-subtle);
 }
 
 .add-reward-button:hover {
-    background-color: var(--color-border); /* Slightly darker grey on hover */
-    transform: scale(1.03); /* Subtle scale */
+    background-color: var(--color-border);
+    transform: scale(1.05); /* Gentle scale */
     border-color: var(--color-accent); /* Red border on hover */
     box-shadow: var(--shadow-medium);
 }
@@ -570,14 +569,14 @@ body.auth-page {
 
 .rewards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Adjust card size */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Slightly larger cards */
     gap: var(--spacing-lg);
     margin-top: var(--spacing-lg);
 }
 
 .reward-item {
     background-color: var(--color-bg-secondary);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-md); /* Softer card corners */
     box-shadow: var(--shadow-subtle);
     padding: var(--spacing-lg);
     display: flex;
@@ -589,7 +588,7 @@ body.auth-page {
 }
 
 .reward-item:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px); /* More pronounced lift on hover */
     box-shadow: var(--shadow-card);
 }
 
@@ -617,7 +616,7 @@ body.auth-page {
     transition: background-color var(--transition-speed);
 }
 .reward-item .buy-reward-btn:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: #329f55; /* Slightly darker green */
 }
 
 
@@ -631,32 +630,32 @@ body.auth-page {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.7); /* Darker, more opaque backdrop */
+    background-color: rgba(0,0,0,0.6); /* Slightly lighter backdrop than before */
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0; /* For animation */
+    opacity: 0;
     transition: opacity 0.3s ease-out;
 }
 
-.modal.show {
+.modal.show { /* Add/remove this class with JS for fade-in */
     opacity: 1;
 }
 
 .modal-content {
     background-color: var(--color-bg-secondary);
     padding: var(--spacing-xl);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-lg); /* Soft modal corners */
     box-shadow: var(--shadow-card);
     position: relative;
     width: 90%;
-    max-width: 600px; /* Wider modal */
+    max-width: 600px;
     text-align: center;
-    transform: translateY(-20px); /* For animation */
+    transform: translateY(-20px); /* Initial position for drop-in animation */
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
-.modal.show .modal-content {
+.modal.show .modal-content { /* Final position for drop-in animation */
     transform: translateY(0);
     opacity: 1;
 }
@@ -691,11 +690,11 @@ body.auth-page {
 }
 
 .modal-content #add-10-xp-btn {
-    width: 70px; /* Fixed width for the +10 XP button */
+    width: 70px;
     padding: var(--spacing-xs);
     font-size: 0.85rem;
     margin-left: var(--spacing-sm);
-    background-color: var(--color-text-secondary); /* Grey button */
+    background-color: var(--color-text-secondary);
     color: var(--color-bg-secondary);
     border-radius: var(--border-radius-sm);
     vertical-align: middle;
