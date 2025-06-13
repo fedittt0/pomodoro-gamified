@@ -1,96 +1,216 @@
-/* estilos.css */
+/* estilos.css - Modern, Minimalist, with Red Highlights */
 
-/* Import modern font Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+/* Import a clean, modern font - Poppins and Inter are good choices */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
+/* Define a consistent color palette and design variables */
 :root {
-  --color-bg: #ffffff;
-  --color-text-primary: #111827; /* Darker accent for headings */
-  --color-text-secondary: #6b7280; /* Neutral gray */
-  --color-accent: #ef4444; /* Pomodoro red */
-  --color-accent-hover: #dc2626;
-  --color-input-bg: #f9fafb;
-  --border-radius: 1.5rem; /* MODIFICATION: Increased border-radius for more rounded corners */
-  --shadow-light: 0 1px 6px rgba(0, 0, 0, 0.1);
-  --transition-speed: 0.3s;
-  --font-family: 'Poppins', sans-serif;
+  /* Color Palette */
+  --color-bg-primary: #f8f9fa; /* Light grey/off-white for main backgrounds */
+  --color-bg-secondary: #ffffff; /* Pure white for cards/sections */
+  --color-text-primary: #212529; /* Dark grey for main text and headings */
+  --color-text-secondary: #6c757d; /* Medium grey for descriptions/less important text */
+  --color-accent: #e63946; /* Vibrant Red for highlights and active states */
+  --color-accent-hover: #d62839; /* Slightly darker red for hover effects */
+  --color-success: #28a745; /* Green for success/positive feedback */
+  --color-success-light: #d4edda; /* Light green background for success */
+  --color-error: #dc3545; /* Red for errors/alerts */
+  --color-error-light: #f8d7da; /* Light red background for errors */
+  --color-input-bg: #e9ecef; /* Light grey for input fields */
+  --color-border: #dee2e6; /* Light grey for borders */
+
+  /* Spacing & Sizing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  /* Typography */
+  --font-family-primary: 'Inter', sans-serif;
+  --font-family-headings: 'Poppins', sans-serif;
+  --font-size-base: 1rem; /* 16px */
+
+  /* Border Radius & Shadows */
+  --border-radius-sm: 0.5rem; /* For smaller elements like buttons */
+  --border-radius-md: 1rem; /* For cards/sections */
+  --border-radius-lg: 1.5rem; /* For prominent containers */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --transition-speed: 0.3s ease-in-out;
 }
 
-/* Reset and base styles */
+/* Base Styles */
 *, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--color-bg);
-  font-family: var(--font-family);
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+  font-family: var(--font-family-primary);
   color: var(--color-text-secondary);
-  font-size: 18px;
-  -webkit-font-smoothing: antialiased;
+  font-size: var(--font-size-base);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-headings);
   color: var(--color-text-primary);
-  margin-top: 0;
-  margin-bottom: 0.5em; /* Adjusted: default reduced margin, will be overwritten by specific classes */
   font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-sm);
 }
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
 
 a {
   color: var(--color-accent);
   text-decoration: none;
   transition: color var(--transition-speed);
 }
-
 a:hover {
   color: var(--color-accent-hover);
 }
 
 button {
-    font-family: var(--font-family);
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
+  font-family: var(--font-family-primary);
+  cursor: pointer;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-bg-secondary);
+  background-color: var(--color-accent);
+  transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+  box-shadow: var(--shadow-sm);
 }
 
+button:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
 
-/* Layout */
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+button:disabled {
+  background-color: var(--color-border);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Form Elements */
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-input-bg);
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.2); /* Soft red focus ring */
+  outline: none;
+}
+
+/* Hide number input arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+
+
+/* --- Layout Containers --- */
 .content-wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 80px); /* Adjust based on nav height */
-    padding-top: 80px; /* Space for fixed nav */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 5rem; /* Space for fixed nav */
 }
 
 .main-content {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align to top initially */
-    padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
 }
 
 .page-container {
-    background-color: var(--color-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-light);
-    padding: 30px 40px;
-    max-width: 900px;
-    width: 100%;
-    margin: 20px; /* Add some margin around the container */
-    display: flex;
-    flex-direction: column;
-    gap: 2rem; /* Space between sections */
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-xl);
+  max-width: 900px;
+  width: 100%;
+  margin: var(--spacing-md) auto; /* Center with vertical margin */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl); /* Space between sections */
+}
+
+/* Section specific styling within page-container */
+.page-container section {
+    background-color: var(--color-bg-primary); /* Slightly different bg for inner sections */
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05); /* Subtle inner shadow */
+    text-align: center;
+}
+
+.page-container section h2 {
+    margin-bottom: var(--spacing-sm); /* Spacing between section title and intro text */
+}
+
+.page-container section .section-description {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg); /* More space below descriptions */
 }
 
 
 /* --- Navigation Bar --- */
 .nav {
-    background-color: var(--color-bg);
-    box-shadow: var(--shadow-light);
-    padding: 0 20px;
-    position: fixed; /* Keep nav at top */
+    background-color: var(--color-bg-secondary);
+    box-shadow: var(--shadow-sm);
+    padding: 0 var(--spacing-lg);
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -103,14 +223,13 @@ button {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    height: 80px; /* Fixed height for nav */
+    height: 5rem; /* Consistent nav height */
 }
 
 .nav .logo {
     font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
-    padding: 10px 0;
+    font-weight: 700;
+    color: var(--color-accent);
 }
 
 .nav .menu {
@@ -118,326 +237,271 @@ button {
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 25px;
+    gap: var(--spacing-lg);
 }
 
 .nav .menu li a {
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     font-weight: 500;
-    padding: 10px 0;
+    padding: var(--spacing-xs) 0;
     display: block;
     position: relative;
+    transition: color var(--transition-speed);
 }
 
 .nav .menu li a:hover {
     color: var(--color-accent);
 }
 
+/* Subtle underline effect on hover */
 .nav .menu li a::after {
     content: '';
     position: absolute;
     width: 0;
     height: 2px;
-    display: block;
-    margin-top: 5px;
-    right: 0;
+    bottom: -3px; /* Position below text */
+    left: 50%; /* Start from center */
     background: var(--color-accent);
-    transition: width 0.3s ease;
+    transition: width var(--transition-speed), left var(--transition-speed);
 }
 
 .nav .menu li a:hover::after {
     width: 100%;
     left: 0;
-    background: var(--color-accent-hover);
 }
 
 /* XP Bubble */
 .xp-bubble {
-    background-color: #4CAF50; /* Green for XP */
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    animation: bounceIn 0.5s ease-out;
+    background-color: var(--color-accent); /* Red accent for XP */
+    color: var(--color-bg-secondary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-lg); /* Very rounded capsule */
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.5s ease-out; /* Simple fade-in for visibility */
 }
 
-@keyframes bounceIn {
-    0% { transform: scale(0.5); opacity: 0; }
-    70% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); }
-}
 
-/* Greeting Container */
+/* --- Greeting Container --- */
 .greeting-container {
     text-align: center;
     font-size: 1.2rem;
     color: var(--color-text-primary);
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-/* Section common styles */
-.page-container section {
-    background-color: #f9f9f9; /* Slightly off-white background for sections */
-    border-radius: 1rem; /* Consistent border radius */
-    padding: 30px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05); /* Subtle inner shadow */
-}
-
-/* General Spacing Improvements */
-
-/* 1. More space between section titles (h2) and descriptions (p) */
-.page-container section h2 {
-    margin-bottom: 0.5rem; /* Reduce default margin */
-}
-
-.page-container section .section-description {
-    margin-top: 0; /* Remove default top margin */
-    margin-bottom: 1.5rem; /* Add more space below the description */
-    line-height: 1.5; /* Improve readability of description */
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
 }
 
 
 /* --- Pomodoro App Section --- */
 .pomodoro-app {
-    text-align: center;
+    /* Styles are mostly inherited from .page-container section */
 }
 
 .clock-card {
-    background: linear-gradient(145deg, #f0f0f0, #ffffff);
-    border-radius: var(--border-radius);
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.1), -5px -5px 15px rgba(255,255,255,0.7);
-    padding: 30px;
-    margin-bottom: 25px;
-    display: inline-block; /* To shrink-wrap content */
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    display: inline-block; /* Shrink-wrap content */
 }
 
 #timer-display {
-    font-size: 5rem; /* Large font for timer */
-    font-weight: 600;
+    font-size: 5rem;
+    font-weight: 700;
     color: var(--color-accent);
-    margin: 10px 0;
-    min-width: 250px; /* Ensure consistent width */
-    display: block; /* Take full width */
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    margin: var(--spacing-sm) 0;
+    min-width: 250px;
+    display: block;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
 }
 
 #mode-label {
     font-size: 1.5rem;
     color: var(--color-text-primary);
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-md);
     display: block;
 }
 
-.controls {
+.break-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+}
+
+.buttons {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Space between buttons */
-    margin-bottom: 25px;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
 }
 
-.control-button {
-    background-color: var(--color-accent);
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
-    box-shadow: var(--shadow-light);
-}
-
-.control-button:hover {
-    background-color: var(--color-accent-hover);
-    transform: translateY(-3px);
-}
-
-.control-button:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.status-info {
-    font-size: 1rem;
+.stats {
+    font-size: var(--font-size-base);
     color: var(--color-text-secondary);
+    margin-top: var(--spacing-md);
+}
+
+.stats p {
+    margin: var(--spacing-xs) 0; /* Space between stat lines */
 }
 
 #pomodoro-count {
     font-weight: 600;
-    color: var(--color-text-primary);
+    color: var(--color-accent);
 }
 
-/* Weekly Study Goals */
-.weekly-goals-section {
-    padding: 20px;
-    background-color: #e6ffe6; /* Light green background */
-    border-radius: 1rem;
-    margin-top: 2rem; /* Spacing from clock */
+/* Pomodoro states backgrounds */
+body.pomodoro-mode { background-color: var(--color-bg-primary); } /* Default */
+body.short-break-mode { background-color: #fcebeb; } /* Light red/pinkish */
+body.long-break-mode { background-color: #e6f7ea; } /* Light green */
+
+
+/* --- Weekly Study Goals Section --- */
+.study-progress-section {
+    /* Inherits from .page-container section */
 }
 
-.progress-bar-container {
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    height: 20px;
-    overflow: hidden;
-    margin-top: 15px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background-color: #4CAF50; /* Green for progress */
-    border-radius: 10px;
-    text-align: center;
-    color: white;
-    font-size: 0.9rem;
-    line-height: 20px;
-    transition: width 0.5s ease-in-out;
-}
-
-.goal-details {
-    margin-top: 10px;
-    font-size: 0.95rem;
-}
-
-#edit-goal-btn {
-    background-color: #007bff; /* Blue for edit button */
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-top: 15px;
-    transition: background-color 0.3s ease;
-}
-
-#edit-goal-btn:hover {
-    background-color: #0056b3;
-}
-
-
-/* --- Auth Interface Specific Styles --- */
-/* (These might be inline in auth_interface.html, but keeping them here for completeness if moved) */
-body.auth-page { /* Added a class to the body for specific auth page styling */
+.progress-info {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #a8edea, #98f9b4); /* Soft, inviting gradient */
-}
-
-.auth-container {
-    display: flex;
-    width: 80%;
-    max-width: 1000px;
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.15);
-    overflow: hidden; /* Ensures border-radius applies to children */
-    animation: fadeIn 1s ease;
-}
-
-.auth-left, .auth-right {
-    flex: 1;
-    padding: 40px;
-    transition: all 0.5s ease;
-    display: flex; /* Use flex for content alignment */
-    flex-direction: column;
-    justify-content: center; /* Vertically center content */
-}
-
-.auth-left {
-    background-color: #f0fff4; /* Light green background */
-    border-right: 1px solid #ddd;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-    text-align: center;
-}
-
-.auth-left h1 {
-    color: #333;
-    margin-bottom: 20px;
-}
-
-.auth-left p {
-    color: #666;
-    font-size: 1.1rem;
-    line-height: 1.5;
-}
-
-.auth-right {
-    background-color: #ffffff;
-}
-
-.auth-form h2 {
-    color: var(--color-text-primary);
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
+    justify-content: space-around;
+    margin-bottom: var(--spacing-md);
     color: var(--color-text-primary);
     font-weight: 500;
 }
 
-.form-group input[type="text"],
-.form-group input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: var(--color-text-primary);
-    background-color: var(--color-input-bg);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+.progress-info span {
+    font-weight: 700;
+    color: var(--color-accent);
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="password"]:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); /* Soft red glow on focus */
-    outline: none;
+.progress-bar-container {
+    background-color: var(--color-border);
+    border-radius: var(--border-radius-md);
+    height: 25px;
+    overflow: hidden;
+    margin-top: var(--spacing-sm);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%; /* Initial state */
+    background-color: var(--color-success); /* Green for progress */
+    border-radius: var(--border-radius-md); /* Match container */
+    transition: width 0.5s var(--transition-speed);
+}
+
+.progress-percentage {
+    position: relative; /* For text overlay */
+    z-index: 1; /* Ensure text is above fill */
+    display: block; /* Take full width */
+    text-align: center;
+    line-height: 25px; /* Vertically center text */
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-primary); /* Text color over bar */
+    /* Adjustments for text position relative to fill */
+    mix-blend-mode: difference; /* Or color: white if text is over dark fill */
+    /* For simplicity, we keep text outside the fill div in HTML */
+    position: absolute; /* Position relative to container */
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+.progress-bar-container span { /* Actual text display for progress */
+    margin-top: var(--spacing-sm);
+    display: block;
+    font-size: 0.95rem;
+    color: var(--color-text-primary);
+}
+
+
+/* --- Auth Interface Specific Styles --- */
+body.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef); /* Soft, light gradient */
+}
+
+.auth-container {
+    display: flex;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-width: 900px;
+    width: 90%;
+}
+
+.auth-left, .auth-right {
+    flex: 1;
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.auth-left {
+    background-color: var(--color-bg-primary); /* Lighter background for left panel */
+    border-right: 1px solid var(--color-border);
+}
+
+.auth-left h1 {
+    color: var(--color-accent); /* Highlight title with accent color */
+    margin-bottom: var(--spacing-md);
+}
+
+.auth-left p {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+}
+
+.auth-right {
+    /* Inherits from auth-container background */
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 350px; /* Constrain form width */
+}
+
+.auth-form h2 {
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-primary);
+    font-weight: 500;
 }
 
 .auth-form button {
     width: 100%;
-    padding: 15px;
-    background-color: var(--color-accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    border-radius: var(--border-radius-md); /* Slightly more rounded buttons */
     font-size: 1.1rem;
-    font-weight: 600;
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
-    margin-top: 15px; /* Space above button */
-}
-
-.auth-form button:hover {
-    background-color: var(--color-accent-hover);
-    transform: translateY(-2px);
-}
-
-.auth-form button:active {
-    transform: translateY(0);
 }
 
 .toggle-link {
     display: block;
     text-align: center;
-    margin-top: 20px;
+    margin-top: var(--spacing-lg);
     font-size: 0.95rem;
     color: var(--color-text-secondary);
 }
@@ -449,235 +513,213 @@ body.auth-page { /* Added a class to the body for specific auth page styling */
 
 .message {
     text-align: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    border-radius: 5px;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
     font-size: 0.9rem;
 }
 
 .message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
 }
 
 .message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: var(--color-error-light);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
 }
 
 /* Keyframe for fade-in effect */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 
-/* --- XP Shop Specific Styles --- */
+/* --- XP Shop Section --- */
 .xp-shop-section {
-    text-align: center;
+    /* Inherits from .page-container section */
+}
+
+.add-reward-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--spacing-xl); /* More space below add button section */
+    margin-top: var(--spacing-md); /* Space above this container */
+}
+
+.add-reward-button {
+    width: 70px; /* Larger soft-edged square */
+    height: 70px;
+    background-color: #ced4da; /* Light grey */
+    border-radius: var(--border-radius-md); /* Soft edges */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3.5rem; /* Large plus sign */
+    color: var(--color-text-secondary); /* Darker grey for plus sign */
+    transition: background-color var(--transition-speed), transform 0.2s ease, box-shadow var(--transition-speed);
+    box-shadow: var(--shadow-sm);
+}
+
+.add-reward-button:hover {
+    background-color: #adb5bd; /* Slightly darker grey on hover */
+    transform: scale(1.05); /* Slight scale */
+    box-shadow: var(--shadow-md);
+}
+
+.add-reward-button-container p {
+    margin-top: var(--spacing-sm);
+    font-size: 0.95rem;
+    color: var(--color-text-primary);
 }
 
 .rewards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 25px; /* Space between reward cards */
-    margin-top: 0; /* Ensures no conflicting top margin */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjust card size */
+    gap: var(--spacing-lg); /* Space between reward cards */
+    margin-top: var(--spacing-lg); /* Space from above elements */
 }
 
 .reward-item {
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: var(--shadow-light);
-    padding: 20px;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    transition: transform 0.2s ease-in-out;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    border: 1px solid var(--color-border); /* Subtle border */
 }
 
 .reward-item:hover {
     transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
 }
 
-.reward-item h3 {
-    font-size: 1.3rem;
-    color: var(--color-text-primary);
-    margin-bottom: 10px;
-}
-
-.reward-item p {
-    font-size: 1.1rem;
-    color: var(--color-accent); /* XP cost in accent color */
+.reward-name {
+    font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 15px;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.reward-cost {
+    font-size: 1.1rem;
+    color: var(--color-accent); /* Red for cost */
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
 }
 
 .reward-item .buy-reward-btn {
-    background-color: #28a745; /* Green for buy button */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%; /* Full width button in card */
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.95rem;
+    background-color: var(--color-success); /* Green for buy button */
 }
-
 .reward-item .buy-reward-btn:hover:not(:disabled) {
-    background-color: #218838;
-    transform: translateY(-2px);
-}
-
-.reward-item .buy-reward-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-.add-reward-button-container {
-    margin-bottom: 2rem; /* Add significant space below the add reward button and text */
-    margin-top: 1.5rem; /* Space above this container */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.add-reward-button {
-    background-color: #007bff; /* Blue for add button */
-    color: white;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%; /* Circular button */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3rem;
-    font-weight: lighter;
-    cursor: pointer;
-    box-shadow: var(--shadow-light);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.add-reward-button:hover {
-    background-color: #0056b3;
-    transform: rotate(90deg) scale(1.05); /* Spin and grow on hover */
-}
-
-.add-reward-button-container p {
-    margin-top: 0.5rem; /* Space between the plus icon button and its text label */
-    margin-bottom: 0;
-    color: var(--color-text-primary);
-    font-size: 1rem;
+    background-color: #218838; /* Darker green */
 }
 
 
-/* --- Modal Styles (Global) --- */
+/* --- Modals (re-using general modal styles from previous versions) --- */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 2000; /* Sit on top */
+    display: none; /* Hidden by default; JS changes to 'flex' */
+    position: fixed;
+    z-index: 2000;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6); /* Darker backdrop */
+    display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: auto; /* Centered */
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 500px;
+    background-color: var(--color-bg-secondary);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
     position: relative;
+    width: 90%;
+    max-width: 550px; /* Slightly larger modal */
     text-align: center;
-    animation: dropIn 0.3s ease-out;
+    animation: fadeInScale 0.3s ease-out; /* Simple entry animation */
 }
 
-@keyframes dropIn {
-    0% { transform: translateY(-50px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-}
-
-.modal-content h3 {
+.modal-content h2, .modal-content h3 {
     color: var(--color-text-primary);
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.modal-content p {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-secondary);
 }
 
 .modal-content .form-group {
-    margin-bottom: 20px;
-    text-align: left; /* Align labels and inputs to the left */
+    margin-bottom: var(--spacing-md);
+    text-align: left;
 }
 
-/* 2. More space between weekly goal label and input field in modals/forms */
-/* Assuming 'form-group' or 'goals-input-single' are relevant classes */
-.form-group label,
-.goals-input-single label {
-    margin-bottom: 0.5rem; /* Add space below the label */
-    display: block; /* Ensure label takes its own line */
-}
-
-.form-group input,
-.goals-input-single input {
-    margin-bottom: 1rem; /* Add space below input fields */
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="number"] {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: var(--color-input-bg);
+.modal-content .form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
     color: var(--color-text-primary);
-    -moz-appearance: textfield; /* Hide arrows for Firefox */
+    font-weight: 500;
 }
 
-/* Hide arrows for Chrome, Safari, Edge */
-.modal-content input[type="number"]::-webkit-outer-spin-button,
-.modal-content input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+/* Specific styling for the +10 XP button within the reward modal */
+.modal-content .form-group input[type="number"] {
+    width: calc(100% - 70px); /* Make space for the +10 XP button */
+    display: inline-block; /* Align with button */
+    vertical-align: middle;
 }
 
-.modal-content button {
-    background-color: var(--color-accent);
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
-    width: auto; /* Allow button to size to content */
-    margin-top: 0; /* Override default button margin, will be set below */
+.modal-content #add-10-xp-btn {
+    width: 60px; /* Fixed width for the +10 XP button */
+    padding: var(--spacing-xs); /* Smaller padding */
+    font-size: 0.85rem;
+    margin-left: var(--spacing-sm);
+    background-color: var(--color-text-secondary); /* Grey button */
+    color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-sm);
+    vertical-align: middle;
 }
 
-.modal-content button:hover {
-    background-color: var(--color-accent-hover);
-    transform: scale(1.05); /* Slight scale on hover */
+.modal-content #add-10-xp-btn:hover {
+    background-color: #5a6268;
+    transform: none; /* No scale on this one */
+    box-shadow: none;
 }
 
-/* Close Button (X icon) */
+.modal-content button#save-modal-goal-btn,
+.modal-content button#save-reward-btn {
+    width: auto; /* Auto width based on content */
+    margin-top: var(--spacing-lg); /* More space above the save button */
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+}
+
+/* Close button for modals */
 .close-button {
     color: var(--color-text-secondary);
     position: absolute;
-    top: 15px;
-    right: 25px;
-    font-size: 35px;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    font-size: 2rem;
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color var(--transition-speed);
 }
 
 .close-button:hover {
@@ -685,117 +727,89 @@ body.auth-page { /* Added a class to the body for specific auth page styling */
 }
 
 
-/* 3. More space on buttons (internal padding or external margin) */
-/* This is a general adjustment. We already have padding on buttons.
-   Let's ensure consistent vertical spacing between buttons and elements above them. */
-.modal-content button,
-button { /* Apply to all buttons where appropriate, consider more specific selectors if needed */
-    margin-top: 1rem; /* Ensures buttons have consistent top margin */
-    /* You already have padding: 12px 25px; which is good.
-       If you want more space *inside* buttons, increase these values. */
-}
-
-/* For specific buttons, like the Save Goal button in the modal */
-#save-modal-goal-btn {
-    margin-top: 1.5rem; /* Slightly more space for this key action */
-}
-
-/* Specific styles for the "Add 10 XP" button in the modal */
-.modal-content #add-10-xp-btn {
-    width: 90px;
-    padding: 10px 5px;
-    background-color: #6c757d; /* A different grey for this button */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-left: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.modal-content #add-10-xp-btn:hover {
-    background-color: #5a6268;
-}
-
-.modal-content button#save-reward-btn {
-    background-color: var(--color-accent);
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: background-color var(--transition-speed), transform var(--transition-speed);
-    width: auto;
-    margin-top: 1rem;
-}
-
-.modal-content button#save-reward-btn:hover {
-    background-color: var(--color-accent-hover);
-    transform: scale(1.05);
-}
-
-/* Responsive adjustments for XP Shop */
+/* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
-    .xp-shop-section {
-        padding: 20px;
+    :root {
+        --font-size-base: 0.95rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
     }
-    .rewards-container {
-        grid-template-columns: 1fr; /* Stack rewards on small screens */
-    }
-    .add-reward-button {
-        width: 50px;
-        height: 50px;
-        font-size: 2.5rem;
-    }
-    .modal-content {
-        width: 95%;
-        padding: 20px;
-    }
-}
 
-/* General responsive adjustments */
-@media (max-width: 600px) {
     .nav-container {
         flex-direction: column;
         height: auto;
-        padding-bottom: 10px;
+        padding: var(--spacing-sm) 0;
     }
     .nav .menu {
         flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
     }
     .nav .menu li a::after {
         display: none; /* Hide hover underline on small screens */
     }
+
+    .content-wrapper {
+        padding-top: 7rem; /* Adjust for taller nav */
+    }
+
     .main-content {
-        padding: 10px;
+        padding: var(--spacing-md);
     }
+
     .page-container {
-        padding: 20px;
-        margin: 10px;
+        padding: var(--spacing-lg);
+        margin: var(--spacing-sm) auto;
+        gap: var(--spacing-lg);
     }
-    .clock-card {
-        padding: 20px;
-    }
+
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+
     #timer-display {
         font-size: 4rem;
+        min-width: unset;
     }
-    .control-button {
-        padding: 10px 20px;
-        font-size: 1rem;
+
+    .buttons {
+        flex-direction: column;
+        gap: var(--spacing-sm);
     }
+    button {
+        width: 100%;
+        max-width: 250px; /* Constrain button width */
+        margin: 0 auto; /* Center individual buttons */
+    }
+
     .auth-container {
         flex-direction: column;
         width: 95%;
+        padding: 0; /* Remove padding as inner sections will have it */
     }
     .auth-left, .auth-right {
-        padding: 20px;
+        padding: var(--spacing-lg);
     }
     .auth-left {
         border-right: none;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .rewards-container {
+        grid-template-columns: 1fr; /* Stack rewards vertically on small screens */
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: var(--spacing-lg);
+    }
+
+    .modal-content .form-group input[type="number"] {
+        width: calc(100% - 60px); /* Slightly smaller button in modal for mobile */
+    }
+    .modal-content #add-10-xp-btn {
+        width: 50px;
+        font-size: 0.75rem;
     }
 }
