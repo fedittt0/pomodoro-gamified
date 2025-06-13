@@ -1,15 +1,15 @@
-/* estilos.css - Soft Minimalist with Red Accent Concept */
+/* estilos.css - Soft Modern with Red Accent Concept */
 
-/* Import modern fonts - Montserrat for headings, Lato for content (a bit softer than Roboto) */
+/* Import rounded sans-serif fonts: Lato for body, Montserrat for headings */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@600;700&display=swap');
 
 /* Define a consistent color palette and design variables */
 :root {
-  /* Color Palette - Softer Tones */
-  --color-bg-primary: #fbfbfc; /* Very light, warm off-white for main backgrounds */
+  /* Color Palette - Muted and Earthy Tones */
+  --color-bg-primary: #f9f9f9; /* Very light, almost white, subtle warmth */
   --color-bg-secondary: #ffffff; /* Pure white for cards/sections */
-  --color-text-primary: #333a40; /* Soft dark grey for main text and headings */
-  --color-text-secondary: #7b8590; /* Muted grey for descriptions/less important text */
+  --color-text-primary: #4a4a4a; /* Softer dark grey for main text and headings */
+  --color-text-secondary: #888888; /* Gentler grey for descriptions/less important text */
   --color-accent: #e63946; /* Vibrant Red (maintains punch) */
   --color-accent-hover: #cc2f3b; /* Slightly darker red for hover effects */
   --color-success: #3cb464; /* Soft green for success/positive feedback */
@@ -17,9 +17,9 @@
   --color-error: #e04a5a; /* Slightly softer red for errors/alerts */
   --color-error-light: #fef0f2; /* Very light, soft red background */
   --color-input-bg: #f5f7fa; /* Light, soft grey for input fields */
-  --color-border: #e8ebf0; /* Very light grey for subtle borders */
-  --color-shadow-light: rgba(0, 0, 0, 0.04); /* Extremely light, diffused shadow */
-  --color-shadow-medium: rgba(0, 0, 0, 0.08); /* Slightly more visible shadow for cards */
+  --color-border: #e0e0e0; /* Very light grey for subtle borders */
+  --color-shadow-light: rgba(0, 0, 0, 0.03); /* Extremely light, diffused shadow */
+  --color-shadow-medium: rgba(0, 0, 0, 0.06); /* Slightly more visible shadow for cards */
 
   /* Spacing & Sizing */
   --spacing-xs: 0.5rem;
@@ -29,14 +29,14 @@
   --spacing-xl: 3rem;
 
   /* Typography */
-  --font-family-primary: 'Lato', sans-serif;
-  --font-family-headings: 'Montserrat', sans-serif;
+  --font-family-primary: 'Lato', sans-serif; /* Rounded Sans-Serif */
+  --font-family-headings: 'Montserrat', sans-serif; /* Rounded Sans-Serif */
   --font-size-base: 1rem; /* 16px */
 
   /* Border Radius & Shadows - Increased for softer look */
-  --border-radius-sm: 8px; /* For smaller elements like buttons */
-  --border-radius-md: 16px; /* For cards/sections */
-  --border-radius-lg: 24px; /* For prominent containers */
+  --border-radius-sm: 10px; /* For smaller elements like buttons */
+  --border-radius-md: 20px; /* For cards/sections */
+  --border-radius-lg: 30px; /* For prominent containers and larger elements */
   --shadow-subtle: 0 4px 10px var(--color-shadow-light); /* Softer, wider subtle shadow */
   --shadow-card: 0 8px 25px var(--color-shadow-medium); /* Diffused shadow for cards */
 
@@ -44,7 +44,7 @@
   --transition-speed: 0.3s ease-in-out;
 }
 
-/* Base Styles */
+/* Base Styles (Generous White Space) */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -67,7 +67,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text-primary);
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm); /* Clear and Legible */
 }
 h1 { font-size: 2.8rem; }
 h2 { font-size: 2.2rem; }
@@ -134,7 +134,7 @@ input[type="text"]:focus,
 input[type="number"]:focus,
 input[type="password"]:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb, 230, 57, 70), 0.2); /* Soft red focus ring */
+  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.2); /* Soft red focus ring using raw RGB for accent color */
   outline: none;
 }
 
@@ -158,7 +158,7 @@ input[type="number"] {
 .mb-lg { margin-bottom: var(--spacing-lg); }
 
 
-/* --- Layout Containers --- */
+/* --- Layout Containers (Grid-based layout implicitly where flex is used) --- */
 .content-wrapper {
   display: flex;
   flex-direction: column;
