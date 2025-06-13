@@ -29,514 +29,615 @@ html, body {
   color: var(--color-text-secondary);
   font-size: 18px;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
+  line-height: 1.6;
 }
 
-/* ===========================
-   NAVIGATION BAR
-   =========================== */
-nav.nav {
-  position: sticky; /* Key property for sticky behavior */
-  top: 0; /* Sticks to the top of the viewport */
-  left: 0;
-  width: 100%; /* Make it span the full width of the viewport */
-  background-color: var(--color-bg);
-  box-shadow: var(--shadow-light);
-  border-bottom: 1px solid #e5e7eb;
-  z-index: 1000; /* Ensures it stays on top of other content */
-  padding: 1rem 0; /* Vertical padding for the nav bar itself. Horizontal padding will be on .nav-container */
-  user-select: none;
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text-primary);
+  margin-top: 0;
+  margin-bottom: 0.5em; /* Adjusted: default reduced margin, will be overwritten by specific classes */
+  font-weight: 600;
 }
 
-nav .nav-container {
-  max-width: 1200px; /* Constrain content width within the nav */
-  margin: 0 auto; /* Center the content within the nav */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem; /* Add horizontal padding to the inner container */
-  border-radius: var(--border-radius);
-}
-
-/* ===========================
-   XP BUBBLE
-   =========================== */
-.xp-bubble {
-    background-color: var(--color-accent); /* Use your accent color */
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 1.5rem; /* Rounded corners */
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin-left: auto; /* Push it to the right within flex container */
-    white-space: nowrap; /* Prevent text from wrapping */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Optional: Positioning if you want it absolutely placed */
-    /* position: absolute;
-    top: 1rem;
-    right: 1rem; */
-}
-
-/* Adjust nav-container to accommodate XP bubble if needed */
-.nav-container {
-    display: flex;
-    align-items: center; /* Vertically align items */
-    gap: 1rem; /* Space between nav items */
-}
-
-nav .logo {
-  font-weight: 800;
-  font-size: 1.5rem;
+a {
   color: var(--color-accent);
   text-decoration: none;
   transition: color var(--transition-speed);
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--border-radius);
-  user-select: none;
 }
 
-nav .logo:hover,
-nav .logo:focus {
+a:hover {
   color: var(--color-accent-hover);
-  background-color: var(--color-input-bg);
-  outline: none;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
-nav .menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 1.5rem; /* Space between menu items */
-}
-
-nav .menu li a {
-    text-decoration: none;
-    color: var(--color-text-secondary);
-    font-weight: 600;
-    padding: 0.5rem 0.75rem;
-    border-radius: var(--border-radius);
-    transition: background-color var(--transition-speed), color var(--transition-speed);
-}
-
-nav .menu li a:hover,
-nav .menu li a:focus {
-    background-color: var(--color-input-bg);
-    color: var(--color-text-primary);
-    outline: none;
-}
-
-/* ===========================
-   GREETING CONTAINER
-   =========================== */
-.greeting-container {
-  text-align: left; /* Aligned to the left */
-  max-width: 720px; /* MODIFICATION: Increased width */
-  margin: 1.5rem auto 1.5rem; /* Centers the container and provides top margin */
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #4b5563; /* A little lighter than primary, but still prominent */
-  padding: 1.5rem 2rem; /* Adjusted padding for better visual appearance with background/shadow */
-  background-color: var(--color-input-bg); /* Added background for shadow visibility */
-  box-shadow: var(--shadow-light); /* Added subtle shadow */
-  border-radius: var(--border-radius); /* Consistent border-radius */
-}
-
-/* ===========================
-   MAIN CONTENT CONTAINER
-   =========================== */
-.main-content {
-  max-width: 720px; /* MODIFICATION: Increased width */
-  width: 100%;
-  margin: 1.5rem auto; /* Center it with some top margin, consistent with greeting */
-  background-color: var(--color-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  padding: 3rem 2.5rem 4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  user-select: none;
-}
-
-/* ===========================
-   HEADINGS
-   =========================== */
-h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin: 0 0 0.75rem;
-  user-select: text;
-}
-
-/* ===========================
-   INPUT FIELDS
-   =========================== */
-input[type="text"],
-input[type="password"] {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1.125rem;
-  border: 1.5px solid #e5e7eb;
-  border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
-  background-color: var(--color-input-bg);
-  color: var(--color-text-primary);
-  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-  font-weight: 500;
-}
-
-input[type="text"]::placeholder,
-input[type="password"]::placeholder {
-  color: #9ca3af;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 6px 2px var(--color-accent);
-}
-
-/* ===========================
-   BUTTONS
-   =========================== */
 button {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: white;
-  background-color: var(--color-accent);
-  border: none;
-  border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
-  cursor: pointer;
-  transition: background-color var(--transition-speed), box-shadow var(--transition-speed), transform var(--transition-speed);
-  user-select: none;
-  margin-top: 0.5rem;
-  box-shadow: 0 4px 9px rgba(239, 68, 68, 0.3);
-}
-
-button:hover,
-button:focus {
-  background-color: var(--color-accent-hover);
-  box-shadow: 0 6px 13px rgba(220, 38, 38, 0.5);
-  outline: none;
-  transform: scale(1.03);
-}
-
-/* Specific button styles for pomodoro */
-.btn-primary {
-  background-color: var(--color-accent);
-}
-
-.btn-primary:hover {
-  background-color: var(--color-accent-hover);
-}
-
-.btn-secondary {
-  background-color: #6b7280; /* A neutral gray */
-}
-
-.btn-secondary:hover {
-  background-color: #4b5563; /* A darker gray */
+    font-family: var(--font-family);
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
 }
 
 
-/* ===========================
-   AUTH SECTIONS
-   =========================== */
-.auth-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* Layout */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 80px); /* Adjust based on nav height */
+    padding-top: 80px; /* Space for fixed nav */
 }
 
-/* ===========================
-   AUTH MESSAGE
-   =========================== */
-#auth-message {
-  margin-top: 1rem;
-  color: var(--color-accent);
-  font-weight: 600;
-  min-height: 24px;
-  user-select: text;
-  font-size: 1rem;
-  text-align: center;
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top initially */
+    padding: 20px;
 }
 
-/* ===========================
-   Pomodoro app specific styles
-   =========================== */
-.pomodoro-app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-}
-
-.clock-card {
-  background-color: var(--color-input-bg);
-  border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
-  padding: 2rem;
-  box-shadow: var(--shadow-light);
-  text-align: center;
-  width: 100%;
-  max-width: 300px; /* Kept narrow for the clock aesthetic */
-}
-
-.break-label {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--color-text-secondary); /* Adjust color as needed */
-    margin-top: 0.5rem; /* Add some space above it */
-    min-height: 1.2em; /* Ensure it takes up space even when empty */
-}
-
-.timer-display {
-  font-size: 4rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.mode-label {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-accent);
-}
-
-.buttons {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-  justify-content: center;
-}
-
-.buttons button {
-  width: auto; /* Adjust button width */
-  padding: 0.9rem 2rem; /* More horizontal padding */
-  margin-top: 0; /* Remove top margin */
-}
-
-.stats {
-  text-align: center;
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-}
-
-.stats p {
-  margin: 0.5rem 0;
-}
-
-
-/* ===========================
-   NEW STYLES FOR WEEKLY GOALS & PROGRESS BAR
-   =========================== */
-
-/* Section styling (common for goals and progress) */
-.study-goals-section,
-.study-progress-section {
-    max-width: 720px; /* MODIFICATION: Increased width */
-    width: 100%;
-    margin: 1.5rem auto; /* Add margin-top for separation, auto for centering, consistent with main-content */
+.page-container {
     background-color: var(--color-bg);
-    border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-light);
-    padding: 2.5rem; /* Consistent padding */
+    padding: 30px 40px;
+    max-width: 900px;
+    width: 100%;
+    margin: 20px; /* Add some margin around the container */
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-}
-
-.section-description {
-    font-size: 1rem;
-    color: var(--color-text-secondary);
-    margin-top: -1rem; /* Pull up slightly closer to heading */
-    text-align: center; /* Center the description */
-}
-
-/* Styles for the single weekly goal input */
-.goals-input-single {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start; /* Align label/input to the left */
-}
-
-.goals-input-single label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
-}
-
-.goals-input-single input[type="number"] {
-    width: 100%; /* Make input fill available width */
-    padding: 0.75rem 1rem; /* Consistent padding with other inputs */
-    font-size: 1.125rem; /* Consistent font size */
-    text-align: left; /* Default text alignment */
-    -moz-appearance: textfield; /* Hide arrows for Firefox */
-    border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
-}
-/* Hide arrows for Chrome, Safari, Edge */
-.goals-input-single input[type="number"]::-webkit-outer-spin-button,
-.goals-input-single input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    gap: 2rem; /* Space between sections */
 }
 
 
-#save-goals-btn {
-    margin-top: 1.5rem; /* Space above the button */
+/* --- Navigation Bar --- */
+.nav {
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-light);
+    padding: 0 20px;
+    position: fixed; /* Keep nav at top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
-/* Study Progress Bar */
-.progress-info {
+.nav-container {
     display: flex;
     justify-content: space-between;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
-    padding: 0.5rem 0; /* MODIFICATION: Added vertical padding here */
-    margin-bottom: 0.75rem; /* MODIFICATION: Added space below it */
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 80px; /* Fixed height for nav */
 }
 
-.progress-info span {
+.nav .logo {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    padding: 10px 0;
+}
+
+.nav .menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px;
+}
+
+.nav .menu li a {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    padding: 10px 0;
+    display: block;
+    position: relative;
+}
+
+.nav .menu li a:hover {
     color: var(--color-accent);
 }
 
-.progress-bar-container {
-    width: 100%;
-    height: 25px;
-    background-color: var(--color-input-bg);
-    border-radius: var(--border-radius); /* This will now use the new 1.5rem value */
-    overflow: hidden; /* Ensures fill stays within rounded corners */
-    position: relative;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow */
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background-color: var(--color-accent);
-    width: 0%; /* Initial width, updated by JS */
-    border-radius: var(--border-radius); /* Match container */
-    transition: width 0.5s ease-in-out; /* Smooth transition for width change */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white; /* Text color for percentage */
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-
-.progress-percentage {
+.nav .menu li a::after {
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--color-text-primary); /* Text color for percentage, outside fill */
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-shadow: 0 0 3px rgba(255,255,255,0.7); /* Subtle shadow for readability */
+    width: 0;
+    height: 2px;
+    display: block;
+    margin-top: 5px;
+    right: 0;
+    background: var(--color-accent);
+    transition: width 0.3s ease;
 }
 
+.nav .menu li a:hover::after {
+    width: 100%;
+    left: 0;
+    background: var(--color-accent-hover);
+}
 
-/* ===========================
-   RESPONSIVE ADJUSTMENTS
-   =========================== */
-@media (max-width: 768px) { /* Adjust breakpoint for larger width */
-  .main-content,
-  .study-goals-section,
-  .study-progress-section,
-  .greeting-container {
-    padding: 2rem 1.5rem 3rem;
-    max-width: 90%; /* Use a percentage for better responsiveness */
-  }
-  h2 {
-    font-size: 2rem;
-  }
-  button, input[type="text"], input[type="password"] {
+/* XP Bubble */
+.xp-bubble {
+    background-color: #4CAF50; /* Green for XP */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
     font-size: 1rem;
-  }
-
-  .timer-display {
-      font-size: 3rem;
-  }
-
-  .mode-label {
-      font-size: 1rem;
-  }
-
-  .buttons button {
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-  }
-  .section-description {
-      font-size: 0.9rem;
-  }
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    animation: bounceIn 0.5s ease-out;
 }
 
-/* Base body padding removal for sticky nav */
-html, body {
-  padding-top: 0;
+@keyframes bounceIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
 }
 
-/* ===========================
-   WEEKLY GOAL MODAL
-   =========================== */
+/* Greeting Container */
+.greeting-container {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--color-text-primary);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 
-/* Modal Backdrop */
+/* Section common styles */
+.page-container section {
+    background-color: #f9f9f9; /* Slightly off-white background for sections */
+    border-radius: 1rem; /* Consistent border radius */
+    padding: 30px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05); /* Subtle inner shadow */
+}
+
+/* General Spacing Improvements */
+
+/* 1. More space between section titles (h2) and descriptions (p) */
+.page-container section h2 {
+    margin-bottom: 0.5rem; /* Reduce default margin */
+}
+
+.page-container section .section-description {
+    margin-top: 0; /* Remove default top margin */
+    margin-bottom: 1.5rem; /* Add more space below the description */
+    line-height: 1.5; /* Improve readability of description */
+}
+
+
+/* --- Pomodoro App Section --- */
+.pomodoro-app {
+    text-align: center;
+}
+
+.clock-card {
+    background: linear-gradient(145deg, #f0f0f0, #ffffff);
+    border-radius: var(--border-radius);
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.1), -5px -5px 15px rgba(255,255,255,0.7);
+    padding: 30px;
+    margin-bottom: 25px;
+    display: inline-block; /* To shrink-wrap content */
+}
+
+#timer-display {
+    font-size: 5rem; /* Large font for timer */
+    font-weight: 600;
+    color: var(--color-accent);
+    margin: 10px 0;
+    min-width: 250px; /* Ensure consistent width */
+    display: block; /* Take full width */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+#mode-label {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin-bottom: 20px;
+    display: block;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between buttons */
+    margin-bottom: 25px;
+}
+
+.control-button {
+    background-color: var(--color-accent);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    box-shadow: var(--shadow-light);
+}
+
+.control-button:hover {
+    background-color: var(--color-accent-hover);
+    transform: translateY(-3px);
+}
+
+.control-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.status-info {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+}
+
+#pomodoro-count {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Weekly Study Goals */
+.weekly-goals-section {
+    padding: 20px;
+    background-color: #e6ffe6; /* Light green background */
+    border-radius: 1rem;
+    margin-top: 2rem; /* Spacing from clock */
+}
+
+.progress-bar-container {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+    margin-top: 15px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #4CAF50; /* Green for progress */
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    font-size: 0.9rem;
+    line-height: 20px;
+    transition: width 0.5s ease-in-out;
+}
+
+.goal-details {
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+#edit-goal-btn {
+    background-color: #007bff; /* Blue for edit button */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+#edit-goal-btn:hover {
+    background-color: #0056b3;
+}
+
+
+/* --- Auth Interface Specific Styles --- */
+/* (These might be inline in auth_interface.html, but keeping them here for completeness if moved) */
+body.auth-page { /* Added a class to the body for specific auth page styling */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #a8edea, #98f9b4); /* Soft, inviting gradient */
+}
+
+.auth-container {
+    display: flex;
+    width: 80%;
+    max-width: 1000px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    overflow: hidden; /* Ensures border-radius applies to children */
+    animation: fadeIn 1s ease;
+}
+
+.auth-left, .auth-right {
+    flex: 1;
+    padding: 40px;
+    transition: all 0.5s ease;
+    display: flex; /* Use flex for content alignment */
+    flex-direction: column;
+    justify-content: center; /* Vertically center content */
+}
+
+.auth-left {
+    background-color: #f0fff4; /* Light green background */
+    border-right: 1px solid #ddd;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.auth-left h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.auth-left p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.auth-right {
+    background-color: #ffffff;
+}
+
+.auth-form h2 {
+    color: var(--color-text-primary);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text-primary);
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--color-text-primary);
+    background-color: var(--color-input-bg);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); /* Soft red glow on focus */
+    outline: none;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    margin-top: 15px; /* Space above button */
+}
+
+.auth-form button:hover {
+    background-color: var(--color-accent-hover);
+    transform: translateY(-2px);
+}
+
+.auth-form button:active {
+    transform: translateY(0);
+}
+
+.toggle-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+}
+
+.toggle-link a {
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+.message {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Keyframe for fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* --- XP Shop Specific Styles --- */
+.xp-shop-section {
+    text-align: center;
+}
+
+.rewards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px; /* Space between reward cards */
+    margin-top: 0; /* Ensures no conflicting top margin */
+}
+
+.reward-item {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: var(--shadow-light);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.reward-item:hover {
+    transform: translateY(-5px);
+}
+
+.reward-item h3 {
+    font-size: 1.3rem;
+    color: var(--color-text-primary);
+    margin-bottom: 10px;
+}
+
+.reward-item p {
+    font-size: 1.1rem;
+    color: var(--color-accent); /* XP cost in accent color */
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.reward-item .buy-reward-btn {
+    background-color: #28a745; /* Green for buy button */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.reward-item .buy-reward-btn:hover:not(:disabled) {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.reward-item .buy-reward-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.add-reward-button-container {
+    margin-bottom: 2rem; /* Add significant space below the add reward button and text */
+    margin-top: 1.5rem; /* Space above this container */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-reward-button {
+    background-color: #007bff; /* Blue for add button */
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Circular button */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: lighter;
+    cursor: pointer;
+    box-shadow: var(--shadow-light);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-reward-button:hover {
+    background-color: #0056b3;
+    transform: rotate(90deg) scale(1.05); /* Spin and grow on hover */
+}
+
+.add-reward-button-container p {
+    margin-top: 0.5rem; /* Space between the plus icon button and its text label */
+    margin-bottom: 0;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+}
+
+
+/* --- Modal Styles (Global) --- */
 .modal {
-    display: none; /* Hidden by default; JavaScript will change this to 'flex' */
+    display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top of everything else */
+    z-index: 2000; /* Sit on top */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if content is too large */
-    background-color: rgba(0,0,0,0.6); /* Semi-transparent black background */
-    display: flex; /* Use flexbox for centering the modal content */
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
 }
 
-/* Modal Content */
 .modal-content {
-    background-color: var(--color-bg); /* Use theme background color */
+    background-color: #fefefe;
+    margin: auto; /* Centered */
     padding: 30px;
-    border-radius: var(--border-radius); /* Match your app's border radius */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Soft shadow */
-    position: relative; /* For positioning the close button */
-    width: 90%; /* Responsive width */
-    max-width: 500px; /* Maximum width for larger screens */
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
     text-align: center;
-    animation: fadeInScale 0.3s ease-out; /* Simple entry animation */
+    animation: dropIn 0.3s ease-out;
 }
 
-.modal-content h2 {
-    color: var(--color-accent); /* Use accent color for headings */
-    margin-bottom: 1rem;
-    font-size: 1.8rem; /* Slightly larger heading */
+@keyframes dropIn {
+    0% { transform: translateY(-50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
 }
 
-.modal-content p {
-    margin-bottom: 1.5rem;
+.modal-content h3 {
     color: var(--color-text-primary);
-    font-size: 1.1rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
 }
 
+.modal-content .form-group {
+    margin-bottom: 20px;
+    text-align: left; /* Align labels and inputs to the left */
+}
+
+/* 2. More space between weekly goal label and input field in modals/forms */
+/* Assuming 'form-group' or 'goals-input-single' are relevant classes */
+.form-group label,
+.goals-input-single label {
+    margin-bottom: 0.5rem; /* Add space below the label */
+    display: block; /* Ensure label takes its own line */
+}
+
+.form-group input,
+.goals-input-single input {
+    margin-bottom: 1rem; /* Add space below input fields */
+}
+
+.modal-content input[type="text"],
 .modal-content input[type="number"] {
-    width: calc(100% - 40px); /* Adjust width to account for padding */
-    padding: 12px 20px;
-    margin-bottom: 1.5rem;
-    border: 1px solid #ccc;
-    border-radius: var(--border-radius);
-    font-size: 1.2rem;
-    text-align: center;
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
     background-color: var(--color-input-bg);
     color: var(--color-text-primary);
     -moz-appearance: textfield; /* Hide arrows for Firefox */
@@ -559,7 +660,7 @@ html, body {
     font-size: 1.1rem;
     transition: background-color var(--transition-speed), transform var(--transition-speed);
     width: auto; /* Allow button to size to content */
-    margin-top: 0; /* Override default button margin */
+    margin-top: 0; /* Override default button margin, will be set below */
 }
 
 .modal-content button:hover {
@@ -576,223 +677,30 @@ html, body {
     font-size: 35px;
     font-weight: bold;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
 
-.close-button:hover,
-.close-button:focus {
-    color: var(--color-accent);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Simple entry animation for the modal content */
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* ===========================
-   XP Shop Styles
-   =========================== */
-.xp-shop-section {
-    background-color: var(--color-bg);
-    padding: 2.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-light);
-    text-align: center;
-    max-width: 800px; /* Adjust as needed */
-    margin: 2rem auto;
-}
-
-.xp-shop-section h2 {
+.close-button:hover {
     color: var(--color-text-primary);
-    margin-bottom: 0.5rem;
 }
 
-.xp-shop-section .section-description {
-    color: var(--color-text-secondary);
-    margin-bottom: 2rem;
+
+/* 3. More space on buttons (internal padding or external margin) */
+/* This is a general adjustment. We already have padding on buttons.
+   Let's ensure consistent vertical spacing between buttons and elements above them. */
+.modal-content button,
+button { /* Apply to all buttons where appropriate, consider more specific selectors if needed */
+    margin-top: 1rem; /* Ensures buttons have consistent top margin */
+    /* You already have padding: 12px 25px; which is good.
+       If you want more space *inside* buttons, increase these values. */
 }
 
-.add-reward-button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 2rem;
+/* For specific buttons, like the Save Goal button in the modal */
+#save-modal-goal-btn {
+    margin-top: 1.5rem; /* Slightly more space for this key action */
 }
 
-.add-reward-button {
-    width: 60px; /* Soft-edged rectangle size */
-    height: 60px;
-    background-color: #e0e0e0; /* Grey color */
-    border-radius: 15px; /* Soft edges */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3rem;
-    color: #6b7280; /* Darker grey for plus sign */
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.add-reward-button:hover {
-    background-color: #d0d0d0;
-    transform: scale(1.05);
-}
-
-.add-reward-button-container p {
-    margin-top: 0.5rem;
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-}
-
-.rewards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-}
-
-.reward-item {
-    background-color: #f9fafb;
-    border: 1px solid #e0e0e0;
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.reward-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.reward-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
-    margin-bottom: 0.8rem;
-    text-align: center;
-}
-
-.reward-cost {
-    font-size: 1.1rem;
-    color: var(--color-accent);
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-.reward-item .buy-reward-btn {
-    background-color: var(--color-accent);
-    color: white;
-    padding: 0.7rem 1.5rem;
-    border: none;
-    border-radius: 1rem; /* Slightly less rounded than main elements */
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
-}
-
-.reward-item .buy-reward-btn:hover {
-    background-color: var(--color-accent-hover);
-}
-
-.reward-item .buy-reward-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-/* Modal styles (re-using existing or adding new) */
-/* Ensure you have basic modal styles defined in estilos.css, if not, add these: */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    position: relative;
-    max-width: 500px;
-    width: 90%;
-    text-align: center;
-}
-
-.modal-content .close-button {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.modal-content .close-button:hover,
-.modal-content .close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.modal-content h3 {
-    color: var(--color-text-primary);
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
-}
-
-.modal-content .form-group {
-    margin-bottom: 1.5rem;
-    text-align: left;
-}
-
-.modal-content .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--color-text-primary);
-    font-weight: 600;
-}
-
-.modal-content .form-group input[type="text"],
-.modal-content .form-group input[type="number"] {
-    width: calc(100% - 110px); /* Adjust width for +10 button */
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: var(--color-text-primary);
-    -moz-appearance: textfield; /* Hide arrows for Firefox */
-}
-
-.modal-content input[type="number"]::-webkit-outer-spin-button,
-.modal-content input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
+/* Specific styles for the "Add 10 XP" button in the modal */
 .modal-content #add-10-xp-btn {
     width: 90px;
     padding: 10px 5px;
@@ -831,21 +739,63 @@ html, body {
 /* Responsive adjustments for XP Shop */
 @media (max-width: 768px) {
     .xp-shop-section {
-        padding: 1.5rem;
+        padding: 20px;
     }
     .rewards-container {
-        grid-template-columns: 1fr; /* Stack rewards vertically on small screens */
+        grid-template-columns: 1fr; /* Stack rewards on small screens */
+    }
+    .add-reward-button {
+        width: 50px;
+        height: 50px;
+        font-size: 2.5rem;
     }
     .modal-content {
         width: 95%;
         padding: 20px;
     }
-    .modal-content .form-group input[type="text"],
-    .modal-content .form-group input[type="number"] {
-        width: calc(100% - 70px); /* Adjust for smaller +10 button */
+}
+
+/* General responsive adjustments */
+@media (max-width: 600px) {
+    .nav-container {
+        flex-direction: column;
+        height: auto;
+        padding-bottom: 10px;
     }
-    .modal-content #add-10-xp-btn {
-        width: 60px; /* Smaller button */
-        padding: 8px;
+    .nav .menu {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .nav .menu li a::after {
+        display: none; /* Hide hover underline on small screens */
+    }
+    .main-content {
+        padding: 10px;
+    }
+    .page-container {
+        padding: 20px;
+        margin: 10px;
+    }
+    .clock-card {
+        padding: 20px;
+    }
+    #timer-display {
+        font-size: 4rem;
+    }
+    .control-button {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+    .auth-container {
+        flex-direction: column;
+        width: 95%;
+    }
+    .auth-left, .auth-right {
+        padding: 20px;
+    }
+    .auth-left {
+        border-right: none;
+        border-bottom: 1px solid #ddd;
     }
 }
