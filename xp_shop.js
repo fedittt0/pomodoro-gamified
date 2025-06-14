@@ -1,14 +1,15 @@
 // xp_shop.js
 
-// REMOVED: These variables are now declared globally in script.js via the window object.
-// We access them as window.loggedInUserId, window.xp, etc.
+// REMOVED: These variables are now declared globally in script.js via the window object,
+// or are general DOM elements that can be accessed directly.
 // const backendBaseUrl = 'https://pomodoro-gamified.onrender.com';
 // let loggedInUserId = null;
 // let xp = 0;
 
-// DOM Elements for XP Shop (these are local constants and fine as they are)
-const xpBubble = document.getElementById('xp-bubble');
-const greetingContainer = document.querySelector('.greeting-container');
+// REMOVED: xpBubble and greetingContainer are now accessed directly in functions,
+// as they are present on the HTML and don't need re-declaration here.
+// const xpBubble = document.getElementById('xp-bubble');
+// const greetingContainer = document.querySelector('.greeting-container');
 
 const addRewardButton = document.getElementById('add-reward-button');
 const rewardsContainer = document.getElementById('rewards-container');
@@ -23,9 +24,10 @@ const saveRewardButton = document.getElementById('save-reward-btn');
 
 // --- Helper Functions ---
 function updateXPBubble() {
-    // Access window.xp directly as it's now a global variable
-    if (xpBubble) {
-        xpBubble.textContent = `XP: ${window.xp}`;
+    // Access window.xp directly as it's now a global variable from script.js
+    const xpBubbleElement = document.getElementById('xp-bubble'); // Get the element when needed
+    if (xpBubbleElement) {
+        xpBubbleElement.textContent = `XP: ${window.xp}`;
     }
 }
 
@@ -62,9 +64,10 @@ async function fetchUserData() {
             updateXPBubble(); // Update XP bubble using the globally updated window.xp
 
             // Display user greeting
+            const greetingContainerElement = document.querySelector('.greeting-container'); // Get the element when needed
             const usuario = localStorage.getItem('usuario');
-            if (greetingContainer && usuario) {
-                greetingContainer.textContent = `Hola, ${usuario}!`;
+            if (greetingContainerElement && usuario) {
+                greetingContainerElement.textContent = `Hola, ${usuario}!`;
             }
         }
     } catch (error) {
@@ -228,6 +231,7 @@ saveRewardButton.addEventListener('click', addReward);
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', async () => {
     // Call fetchUserData and fetchRewards, which now correctly use the global variables.
+    // fetchUserData now calls window.fetchUserDataCommon internally, which populates window.xp.
     await fetchUserData(); // This ensures window.loggedInUserId and window.xp are populated.
     await fetchRewards(); // This uses window.xp to enable/disable buy buttons.
 });
