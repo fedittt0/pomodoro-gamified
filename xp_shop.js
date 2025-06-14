@@ -1,12 +1,14 @@
 // xp_shop.js
 
-const backendBaseUrl = 'https://pomodoro-gamified.onrender.com'; // Your backend URL
-let loggedInUserId = null;
-let xp = 0; // Current XP from user data
+// REMOVED: These variables are now declared globally in script.js via the window object.
+// We access them as window.loggedInUserId, window.xp, etc.
+// const backendBaseUrl = 'https://pomodoro-gamified.onrender.com';
+// let loggedInUserId = null;
+// let xp = 0;
 
-// DOM Elements for XP Shop
-const xpBubble = document.getElementById('xp-bubble'); // From index.html, also used here
-const greetingContainer = document.querySelector('.greeting-container'); // From index.html
+// DOM Elements for XP Shop (these are local constants and fine as they are)
+const xpBubble = document.getElementById('xp-bubble');
+const greetingContainer = document.querySelector('.greeting-container');
 
 const addRewardButton = document.getElementById('add-reward-button');
 const rewardsContainer = document.getElementById('rewards-container');
@@ -21,61 +23,60 @@ const saveRewardButton = document.getElementById('save-reward-btn');
 
 // --- Helper Functions ---
 function updateXPBubble() {
+    // Access window.xp directly as it's now a global variable
     if (xpBubble) {
-        xpBubble.textContent = `XP: ${xp}`;
+        xpBubble.textContent = `XP: ${window.xp}`;
     }
 }
 
 function showModal(modalElement) {
     if (modalElement) {
         modalElement.style.display = 'flex';
-        // Add a class for animation if desired (needs CSS for .modal.show)
-        // modalElement.classList.add('show');
+        // modalElement.classList.add('show'); // If you add CSS animation for this class
     }
 }
 
 function hideModal(modalElement) {
     if (modalElement) {
         modalElement.style.display = 'none';
-        // modalElement.classList.remove('show');
+        // modalElement.classList.remove('show'); // If you add CSS animation for this class
     }
 }
 
 // --- API Calls ---
 
-// Fetch user data (including XP)
+// Fetch user data (including XP) - this function now relies on the common
+// fetchUserDataCommon from script.js to populate global window.xp and window.loggedInUserId.
 async function fetchUserData() {
-    loggedInUserId = localStorage.getItem('userId');
-    if (!loggedInUserId) {
+    // window.loggedInUserId is set in script.js's DOMContentLoaded, which runs first.
+    if (!window.loggedInUserId) {
         console.error('No user ID found in localStorage.');
         window.location.href = 'auth_interface.html'; // Redirect to login
         return;
     }
 
     try {
-        const response = await fetch(`${backendBaseUrl}/api/user/data?userId=${loggedInUserId}`);
-        if (response.ok) {
-            const data = await response.json();
-            xp = data.xp;
-            updateXPBubble(); // Update XP bubble on page load
+        const data = await window.fetchUserDataCommon(); // Use the common function from script.js
+        if (data) {
+            // window.xp is already updated by fetchUserDataCommon, so no need for a local 'xp' variable.
+            updateXPBubble(); // Update XP bubble using the globally updated window.xp
 
             // Display user greeting
             const usuario = localStorage.getItem('usuario');
             if (greetingContainer && usuario) {
                 greetingContainer.textContent = `Hola, ${usuario}!`;
             }
-        } else {
-            console.error('Failed to fetch user data:', response.status, response.statusText);
         }
     } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching user data in xp_shop:', error);
     }
 }
 
 // Fetch rewards from the backend
 async function fetchRewards() {
     try {
-        const response = await fetch(`${backendBaseUrl}/api/rewards`);
+        // Use window.backendBaseUrl to access the globally declared backend URL
+        const response = await fetch(`${window.backendBaseUrl}/api/rewards`);
         if (response.ok) {
             const rewards = await response.json();
             displayRewards(rewards);
@@ -93,18 +94,21 @@ async function addReward() {
     const cost = parseInt(rewardCostInput.value);
 
     if (!name || isNaN(cost) || cost <= 0) {
+        // IMPORTANT: Replace alert() with a custom modal here
         alert('Por favor, ingresa un nombre y un costo válido para la recompensa.');
         return;
     }
 
     try {
-        const response = await fetch(`${backendBaseUrl}/api/rewards`, {
+        // Use window.backendBaseUrl to access the globally declared backend URL
+        const response = await fetch(`${window.backendBaseUrl}/api/rewards`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, cost })
         });
 
         if (response.ok) {
+            // IMPORTANT: Replace alert() with a custom modal here
             alert('Recompensa añadida con éxito!');
             rewardNameInput.value = '';
             rewardCostInput.value = '10'; // Reset to default
@@ -112,46 +116,53 @@ async function addReward() {
             fetchRewards(); // Refresh the list of rewards
         } else {
             const errorData = await response.json();
+            // IMPORTANT: Replace alert() with a custom modal here
             alert('Error al añadir recompensa: ' + (errorData.message || 'Error desconocido.'));
         }
     } catch (error) {
         console.error('Error adding reward:', error);
+        // IMPORTANT: Replace alert() with a custom modal here
         alert('Error al añadir recompensa. Intenta de nuevo.');
     }
 }
 
 // Purchase a reward
 async function purchaseReward(rewardId, cost) {
-    if (xp < cost) {
+    // Access window.xp directly as it's now a global variable
+    if (window.xp < cost) {
+        // IMPORTANT: Replace alert() with a custom modal here
         alert('¡No tienes suficiente XP para comprar esta recompensa!');
         return;
     }
 
     // IMPORTANT: Replace confirm() with a custom modal for better UX and consistency
-    // For now, keeping confirm() as it was in the original file
     if (!confirm(`¿Estás seguro de que quieres comprar esta recompensa por ${cost} XP?`)) {
         return;
     }
 
     try {
-        const response = await fetch(`${backendBaseUrl}/api/user/purchase-reward`, {
+        // Use window.backendBaseUrl and window.loggedInUserId to access global variables
+        const response = await fetch(`${window.backendBaseUrl}/api/user/purchase-reward`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: loggedInUserId, rewardId, cost })
+            body: JSON.stringify({ userId: window.loggedInUserId, rewardId, cost })
         });
 
         if (response.ok) {
             const data = await response.json();
-            xp = data.newXp; // Update global XP
-            updateXPBubble(); // Update XP bubble
-            alert(`¡Recompensa comprada con éxito! Tu nuevo XP es: ${xp}`);
+            window.xp = data.newXp; // Update global XP
+            updateXPBubble(); // Update XP bubble using the globally updated window.xp
+            // IMPORTANT: Replace alert() with a custom modal here
+            alert(`¡Recompensa comprada con éxito! Tu nuevo XP es: ${window.xp}`);
             fetchRewards(); // Refresh rewards to update button states (disabled if not enough XP)
         } else {
             const errorData = await response.json();
+            // IMPORTANT: Replace alert() with a custom modal here
             alert('Error al comprar recompensa: ' + (errorData.message || 'Error desconocido.'));
         }
     } catch (error) {
         console.error('Error purchasing reward:', error);
+        // IMPORTANT: Replace alert() with a custom modal here
         alert('Error al comprar recompensa. Intenta de nuevo.');
     }
 }
@@ -183,7 +194,8 @@ function displayRewards(rewards) {
         const buyButton = document.createElement('button');
         buyButton.classList.add('buy-reward-btn');
         buyButton.textContent = 'Comprar';
-        buyButton.disabled = xp < reward.cost; // Disable if not enough XP
+        // Access window.xp directly as it's now a global variable
+        buyButton.disabled = window.xp < reward.cost; // Disable if not enough XP
         buyButton.addEventListener('click', () => purchaseReward(reward._id, reward.cost));
 
         rewardItem.appendChild(rewardName);
@@ -215,14 +227,9 @@ saveRewardButton.addEventListener('click', addReward);
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', async () => {
-    await fetchUserData(); // Get current XP
-    await fetchRewards(); // Load rewards
+    // Call fetchUserData and fetchRewards, which now correctly use the global variables.
+    await fetchUserData(); // This ensures window.loggedInUserId and window.xp are populated.
+    await fetchRewards(); // This uses window.xp to enable/disable buy buttons.
 });
 
-// REMOVED: Duplicative logoutUsuario function.
-// It's already defined in script.js and loaded before this script.
-// function logoutUsuario() {
-//     localStorage.removeItem('usuario');
-//     localStorage.removeItem('userId');
-//     window.location.href = 'auth_interface.html';
-// }
+// REMOVED: Duplicative logoutUsuario function. It's already defined in script.js and loaded before this script.
