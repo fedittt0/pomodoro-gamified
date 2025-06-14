@@ -14,8 +14,9 @@
       <ul class="menu" role="menubar">
         <li role="none"><a role="menuitem" href="xp_shop.html" tabindex="0">Tienda XP</a></li>
         <li role="none"><a role="menuitem" href="#" tabindex="0">Amigos</a></li>
-        </ul>
-        <div id="xp-bubble" class="xp-bubble" aria-label="Current Experience Points">XP: 0</div>
+        <li role="none"><a role="menuitem" href="#" onclick="logoutUsuario()">Salir</a></li>
+      </ul>
+      <div id="xp-bubble" class="xp-bubble" aria-label="Current Experience Points">XP: 0</div>
     </div>
   </nav>
 
@@ -27,51 +28,44 @@
         <section class="pomodoro-app" aria-live="polite" aria-atomic="true">
 
           <div class="clock-card" role="timer" aria-label="Timer countdown">
-            <div id="timer-display" class="timer-display">20:00</div>
-            <div class="mode-label" id="mode-label">Pomodoro</div>
-          </div>
-          <div id="break-label" class="break-label"></div>
-          <div class="buttons">
-            <button id="play-pause" aria-label="Start or pause the timer" type="button" class="btn btn-primary">Play</button>
-            <button id="reset" aria-label="Reset the timer" type="button" class="btn btn-secondary">Reset</button>
-          </div>
-          <div class="stats" aria-live="polite">
-            <p>Pomodoros terminados: <span id="pomodoro-count">0</span></p>
-            <p id="break-label" hidden>Recreo largo!</p>
+            <div id="timer-display">20:00</div>
+            <div id="mode-label">Pomodoro</div>
+            <p id="break-label" class="break-label"></p> <!-- NEW: Label for break messages -->
+            <div class="buttons">
+              <button id="play-pause">Iniciar</button>
+              <button id="reset">Reiniciar</button>
+            </div>
+            <div class="stats">
+              <p>Pomodoros completados esta sesión: <span id="pomodoro-count">0</span></p>
+            </div>
           </div>
         </section>
-      </main>
-            <!-- ojo  q aca empieza lo experimental-->
-       <section class="study-progress-section" aria-labelledby="study-progress-heading">
-        <h2 id="study-progress-heading">Progreso Semanal</h2>
-        <!--<p class="section-description">Mira tu progreso en base a tus objetivos semanales.</p> -->
-        <div class="progress-info">
-            <p>Actual: <span id="current-pomodoro-time">0</span></p>
-            <p>Deseado: <span id="total-desired-time">0</span></p>
-        </div>
-        <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%;"></div>
-            <span id="progress-percentage" class="progress-percentage"></span>
-        </div>
-      </section>
 
-      <section class="study-goals-section" aria-labelledby="study-goals-heading">
-        <h2 id="study-goals-heading">Objetivos de Estudio Semanales</h2>
-        <p class="section-description">Establecé tu tiempo de estudio deseado para cada día de la semana</p>
-        <div class="goals-input-single">
-            <label for="weekly-goal">Meta Semanal Total (horas):</label>
-            <input type="number" id="weekly-goal" value="0" min="0">
-        </div>
-        <button id="save-goals-btn" class="btn btn-primary">Guardar Objetivos</button>
-      </section>
+        <section class="study-progress-section" aria-labelledby="goals-heading">
+            <h2 id="goals-heading">Tu Progreso de Estudio Semanal</h2>
+            <p class="section-description">¡Mantén un seguimiento de tus horas de Pomodoro para alcanzar tus objetivos!</p>
+
+            <div class="progress-info">
+                <p>Estudiado esta semana: <span id="current-pomodoro-time">0 minutos</span></p>
+                <p>Meta semanal: <span id="total-desired-time">0 minutos</span></p>
+            </div>
+
+            <div class="progress-bar-container">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                <!-- NEW: Element to display the percentage/hours text -->
+                <span id="progress-percentage" class="progress-percentage"></span>
+            </div>
+            <button id="edit-goal-btn">Editar Meta Semanal</button>
+        </section>
+      </main>
     </div>
-  </div> 
-  
-  <!-- POPUP de weekly goal-->
-  <div id="weeklyGoalModal" class="modal">
+  </div>
+
+  <!-- Weekly Goal Setting Modal -->
+<div id="weeklyGoalModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="weeklyGoalModalTitle">
     <div class="modal-content">
         <span class="close-button">&times;</span>
-        <h2>¡Es Lunes! Hora de establecer tu meta semanal.</h2>
+        <h3 id="weeklyGoalModalTitle">Establecer Meta Semanal</h3>
         <p>¿Cuántas horas de Pomodoro quieres estudiar esta semana?</p>
         <div class="goals-input-single">
             <label for="modal-weekly-goal-input">Meta Semanal (horas):</label>
@@ -80,34 +74,7 @@
         <button id="save-modal-goal-btn">Guardar Meta</button>
     </div>
 </div>
-  
+
   <script src="script.js"></script>
-
-  <script>
-    // Protect the page
-    document.addEventListener('DOMContentLoaded', () => {
-        const usuario = localStorage.getItem('usuario');
-        const menu = document.querySelector('.nav-container .menu'); // Select the correct menu
-
-        if (!usuario) {
-            alert('Tenés que iniciar sesión primero.');
-            window.location.href = 'auth_interface.html';
-        } else {
-            // Display username in greeting container
-            document.querySelector('.greeting-container').textContent = `Hola, ${usuario}!`;
-
-            // Add logout button to the navigation menu
-            const logoutItem = document.createElement('li');
-            logoutItem.innerHTML = `<a href="#" onclick="logoutUsuario()">Salir</a>`;
-            menu.appendChild(logoutItem); // Append to the actual menu
-        }
-    });
-
-    // Function to log out
-    function logoutUsuario() {
-        localStorage.removeItem('usuario');
-        window.location.href = 'auth_interface.html'; // Redirect to auth_interface.html
-    }
-  </script>
 </body>
 </html>
