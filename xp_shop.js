@@ -1,15 +1,8 @@
 // xp_shop.js
 
-// REMOVED: These variables are now declared globally in script.js via the window object,
-// or are general DOM elements that can be accessed directly.
-// const backendBaseUrl = 'https://pomodoro-gamified.onrender.com';
-// let loggedInUserId = null;
-// let xp = 0;
-
-// REMOVED: xpBubble and greetingContainer are now accessed directly in functions,
-// as they are present on the HTML and don't need re-declaration here.
-// const xpBubble = document.getElementById('xp-bubble');
-// const greetingContainer = document.querySelector('.greeting-container');
+// No local const/let for backendBaseUrl, loggedInUserId, xp, totalPomodoroMinutes, weeklyStudyGoals, lastResetDate.
+// These are all made global on the 'window' object by script.js, which is loaded before this file.
+// We also removed the local DOM element const declarations as they can be accessed directly.
 
 const addRewardButton = document.getElementById('add-reward-button');
 const rewardsContainer = document.getElementById('rewards-container');
@@ -24,9 +17,9 @@ const saveRewardButton = document.getElementById('save-reward-btn');
 
 // --- Helper Functions ---
 function updateXPBubble() {
-    // Access window.xp directly as it's now a global variable from script.js
-    const xpBubbleElement = document.getElementById('xp-bubble'); // Get the element when needed
-    if (xpBubbleElement) {
+    // Access window.xp directly and get the xpBubble DOM element directly
+    const xpBubbleElement = document.getElementById('xp-bubble');
+    if (xpBubbleElement && typeof window.xp !== 'undefined') {
         xpBubbleElement.textContent = `XP: ${window.xp}`;
     }
 }
@@ -50,7 +43,7 @@ function hideModal(modalElement) {
 // Fetch user data (including XP) - this function now relies on the common
 // fetchUserDataCommon from script.js to populate global window.xp and window.loggedInUserId.
 async function fetchUserData() {
-    // window.loggedInUserId is set in script.js's DOMContentLoaded, which runs first.
+    // window.loggedInUserId is set by script.js's DOMContentLoaded, which runs first.
     if (!window.loggedInUserId) {
         console.error('No user ID found in localStorage.');
         window.location.href = 'auth_interface.html'; // Redirect to login
@@ -60,11 +53,11 @@ async function fetchUserData() {
     try {
         const data = await window.fetchUserDataCommon(); // Use the common function from script.js
         if (data) {
-            // window.xp is already updated by fetchUserDataCommon, so no need for a local 'xp' variable.
+            // window.xp is already updated by fetchUserDataCommon.
             updateXPBubble(); // Update XP bubble using the globally updated window.xp
 
             // Display user greeting
-            const greetingContainerElement = document.querySelector('.greeting-container'); // Get the element when needed
+            const greetingContainerElement = document.querySelector('.greeting-container'); // Get element directly
             const usuario = localStorage.getItem('usuario');
             if (greetingContainerElement && usuario) {
                 greetingContainerElement.textContent = `Hola, ${usuario}!`;
@@ -132,7 +125,7 @@ async function addReward() {
 // Purchase a reward
 async function purchaseReward(rewardId, cost) {
     // Access window.xp directly as it's now a global variable
-    if (window.xp < cost) {
+    if (typeof window.xp === 'undefined' || window.xp < cost) {
         // IMPORTANT: Replace alert() with a custom modal here
         alert('¡No tienes suficiente XP para comprar esta recompensa!');
         return;
@@ -198,7 +191,7 @@ function displayRewards(rewards) {
         buyButton.classList.add('buy-reward-btn');
         buyButton.textContent = 'Comprar';
         // Access window.xp directly as it's now a global variable
-        buyButton.disabled = window.xp < reward.cost; // Disable if not enough XP
+        buyButton.disabled = (typeof window.xp === 'undefined' || window.xp < reward.cost); // Disable if not enough XP
         buyButton.addEventListener('click', () => purchaseReward(reward._id, reward.cost));
 
         rewardItem.appendChild(rewardName);
