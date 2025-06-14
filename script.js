@@ -1,6 +1,6 @@
 // script.js
 
-// Pomodoro timer settings
+// Pomodoro timer settings (remain local to this script's scope for now)
 const pomodoroDuration = 20 * 60; // 20 minutes
 const shortBreakDuration = 5 * 60; // 5 minutes
 const longBreakDuration = 10 * 60; // 10 minutes
@@ -12,14 +12,14 @@ let isRunning = false;
 let pomodorosCompleted = 0; // Pomodoros completed in current session (resets on page load)
 let currentMode = 'Pomodoro'; // Modes: Pomodoro, Short Break, Long Break
 
-// Global variables for user data and goals
-let loggedInUserId = null;
-let totalPomodoroMinutes = 0; // Accumulated time from backend
-let weeklyStudyGoals = 0; // Total desired study time for the week in minutes
-let xp = 0; // User's XP
+// Global variables for user data and goals - now attached to window object
+window.loggedInUserId = null;
+window.totalPomodoroMinutes = 0; // Accumulated time from backend
+window.weeklyStudyGoals = 0; // Total desired study time for the week in minutes
+window.xp = 0; // User's XP
 
-// Global variable for last reset date from backend
-let lastResetDate = null;
+// Global variable for last reset date from backend - attached to window object
+window.lastResetDate = null;
 
 // Declare backendBaseUrl once globally accessible via window object
 window.backendBaseUrl = 'https://pomodoro-gamified.onrender.com'; // IMPORTANT: Replace with your actual Render backend URL
@@ -61,17 +61,15 @@ function initializePomodoroPage() {
     const breakLabel = document.getElementById('break-label');
     const currentPomodoroTimeDisplay = document.getElementById('current-pomodoro-time');
     const totalDesiredTimeDisplay = document.getElementById('total-desired-time');
-    const weeklyGoalInput = document.getElementById('weekly-goal');
-    const saveGoalsBtn = document.getElementById('save-goals-btn');
+    const weeklyGoalInput = document.getElementById('weekly-goal'); // Assuming this is present on index.html
+    const saveGoalsBtn = document.getElementById('save-goals-btn'); // Assuming this is present on index.html
     const weeklyGoalModal = document.getElementById('weeklyGoalModal');
     const modalCloseButton = document.querySelector('#weeklyGoalModal .close-button');
     const modalWeeklyGoalInput = document.getElementById('modal-weekly-goal-input');
     const saveModalGoalBtn = document.getElementById('save-modal-goal-btn');
     const progressBarFill = document.getElementById('progress-bar-fill');
     const progressPercentageDisplay = document.getElementById('progress-percentage');
-    // progressTextDisplay is not used in updateProgressBar currently, but could be added back
-    // const progressTextDisplay = document.getElementById('progress-text');
-
+    const editGoalBtn = document.getElementById('edit-goal-btn'); // FIXED: Get the edit goal button
 
     // Only proceed if core Pomodoro elements exist
     if (timerDisplay && modeLabel && playPauseButton && resetButton) {
@@ -161,16 +159,17 @@ function initializePomodoroPage() {
                 const response = await fetch(`${window.backendBaseUrl}/api/pomodoro/add-time`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: loggedInUserId, minutes: minutes })
+                    body: JSON.stringify({ userId: window.loggedInUserId, minutes: minutes })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    totalPomodoroMinutes = data.total_pomodoro_minutes;
-                    weeklyStudyGoals = data.weekly_goal;
-                    xp = data.xp; // Update global XP from response
+                    window.totalPomodoroMinutes = data.total_pomodoro_minutes;
+                    window.weeklyStudyGoals = data.weekly_goal;
+                    window.xp = data.xp; // Update global XP from response
                     updateProgressBar(); // Update progress bar after adding time
                     console.log('Tiempo de Pomodoro y XP agregados con éxito:', data);
+                    updateXPBubble(); // Ensure XP bubble is updated here too
                 } else {
                     console.error('Error al agregar tiempo de Pomodoro:', response.status, response.statusText);
                 }
@@ -180,42 +179,22 @@ function initializePomodoroPage() {
         }
 
         // Fetch user data from the backend (shared function, but specific updates here)
+        // This function is now only responsible for updating Pomodoro page specific elements
+        // Global data update is handled by fetchUserDataCommon()
         async function fetchUserDataAndSetupPage() {
-            const userId = localStorage.getItem('userId');
-            if (!userId) {
-                console.error('No user ID found in localStorage.');
-                // Redirection is handled in the main DOMContentLoaded listener
-                return;
+            // Data is already fetched by fetchUserDataCommon()
+            // We just need to update the local display elements
+            if (currentPomodoroTimeDisplay) {
+                currentPomodoroTimeDisplay.textContent = `${window.totalPomodoroMinutes} minutos`;
             }
-
-            try {
-                const response = await fetch(`${window.backendBaseUrl}/api/user/data?userId=${userId}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    totalPomodoroMinutes = data.total_pomodoro_minutes;
-                    weeklyStudyGoals = data.weekly_goal;
-                    xp = data.xp;
-                    lastResetDate = new Date(data.last_reset_date);
-
-                    if (currentPomodoroTimeDisplay) {
-                        currentPomodoroTimeDisplay.textContent = `${totalPomodoroMinutes} minutos`;
-                    }
-                    if (totalDesiredTimeDisplay) {
-                        totalDesiredTimeDisplay.textContent = `${weeklyStudyGoals} minutos`;
-                    }
-                    if (xpBubble) {
-                        xpBubble.textContent = `XP: ${xp}`;
-                    }
-
-                    updateProgressBar();
-                    if (modalWeeklyGoalInput) {
-                        modalWeeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0);
-                    }
-                } else {
-                    console.error('Failed to fetch user data:', response.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
+            if (totalDesiredTimeDisplay) {
+                totalDesiredTimeDisplay.textContent = `${window.weeklyStudyGoals} minutos`;
+            }
+            // xpBubble update is in fetchUserDataCommon()
+            
+            updateProgressBar();
+            if (modalWeeklyGoalInput) {
+                modalWeeklyGoalInput.value = (window.weeklyStudyGoals / 60).toFixed(0);
             }
         }
 
@@ -244,26 +223,27 @@ function initializePomodoroPage() {
                 const response = await fetch(`${window.backendBaseUrl}/api/user/save-goals`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: loggedInUserId, weekly_goal: minutes })
+                    body: JSON.stringify({ userId: window.loggedInUserId, weekly_goal: minutes })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     // IMPORTANT: Replace alert() with a custom modal
                     alert(data.mensaje);
-                    weeklyStudyGoals = data.weekly_goal; // Update global variable with saved goal
-                    totalPomodoroMinutes = data.total_pomodoro_minutes; // Update total minutes (might have been reset by backend)
-                    xp = data.xp; // Update XP
+                    window.weeklyStudyGoals = data.weekly_goal; // Update global variable with saved goal
+                    window.totalPomodoroMinutes = data.total_pomodoro_minutes; // Update total minutes (might have been reset by backend)
+                    window.xp = data.xp; // Update global XP
 
                     updateProgressBar(); // Update progress bar display
                     // Ensure the main page input also reflects the newly set goal
                     if (weeklyGoalInput) {
-                        weeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0);
+                        weeklyGoalInput.value = (window.weeklyStudyGoals / 60).toFixed(0);
                     }
 
                     if (inputSource === 'save-modal-goal-btn') {
                         hideGoalModal(); // Hide modal if saved from there
                     }
+                    updateXPBubble(); // Ensure XP bubble is updated here too
                 } else {
                     const errorData = await response.json();
                     // IMPORTANT: Replace alert() with a custom modal
@@ -279,14 +259,14 @@ function initializePomodoroPage() {
         // Function to update the progress bar
         function updateProgressBar() {
             console.log('--- updateProgressBar called ---');
-            console.log('global totalPomodoroMinutes:', totalPomodoroMinutes);
-            console.log('global weeklyStudyGoals:', weeklyStudyGoals);
+            console.log('global totalPomodoroMinutes:', window.totalPomodoroMinutes);
+            console.log('global weeklyStudyGoals:', window.weeklyStudyGoals);
             console.log('progressBarFill element (should NOT be null):', progressBarFill);
             console.log('progressPercentageDisplay element (should NOT be null):', progressPercentageDisplay);
 
             let percentage = 0;
-            let goalHours = (weeklyStudyGoals / 60);
-            let currentHours = (totalPomodoroMinutes / 60);
+            let goalHours = (window.weeklyStudyGoals / 60);
+            let currentHours = (window.totalPomodoroMinutes / 60);
 
             if (goalHours > 0) {
                 percentage = (currentHours / goalHours) * 100;
@@ -313,11 +293,6 @@ function initializePomodoroPage() {
             } else {
                 console.error('ERROR: progressPercentageDisplay element not found in DOM!');
             }
-
-            // Update XP bubble (this is also handled in global DOMContentLoaded)
-            // if (xpBubble) {
-            //     xpBubble.textContent = `XP: ${xp}`;
-            // }
         }
 
         // Function to check if today is Monday
@@ -330,14 +305,20 @@ function initializePomodoroPage() {
         function showGoalModal() {
             if (weeklyGoalModal && modalWeeklyGoalInput) {
                 // Set the input value to the current weekly goal (or 0 if not set)
-                modalWeeklyGoalInput.value = (weeklyStudyGoals / 60).toFixed(0);
+                modalWeeklyGoalInput.value = (window.weeklyStudyGoals / 60).toFixed(0);
                 weeklyGoalModal.style.display = 'flex'; // Use flex to center
+                // Add show class for modal animation
+                setTimeout(() => weeklyGoalModal.classList.add('show'), 10); // Small delay to allow display to apply
             }
         }
 
         function hideGoalModal() {
             if (weeklyGoalModal) {
-                weeklyGoalModal.style.display = 'none';
+                weeklyGoalModal.classList.remove('show');
+                // Hide modal after animation completes
+                setTimeout(() => {
+                    weeklyGoalModal.style.display = 'none';
+                }, 300); // Match CSS transition duration
             }
         }
 
@@ -357,6 +338,11 @@ function initializePomodoroPage() {
         // Event listener for saving goals from the main page input
         if (saveGoalsBtn) {
             saveGoalsBtn.addEventListener('click', saveWeeklyGoals);
+        }
+
+        // Event listener for opening the weekly goal modal FIXED
+        if (editGoalBtn) {
+            editGoalBtn.addEventListener('click', showGoalModal);
         }
 
         // Event listener for saving goals from the modal
@@ -380,9 +366,13 @@ function initializePomodoroPage() {
         updateDisplay();
 
         // Logic to display weekly goal modal on Monday ONLY if weeklyStudyGoals is 0
-        if (isMonday() && weeklyStudyGoals === 0) {
+        // and if it's the Pomodoro page
+        if (isMonday() && window.weeklyStudyGoals === 0 && weeklyGoalModal) {
             showGoalModal();
         }
+        
+        // Initial setup of Pomodoro page specific user data
+        fetchUserDataAndSetupPage();
     }
 }
 
@@ -392,11 +382,16 @@ function initializePomodoroPage() {
 // This runs on ALL pages where script.js is loaded
 // ======================================\
 document.addEventListener('DOMContentLoaded', async () => {
-    loggedInUserId = localStorage.getItem('userId');
+    window.loggedInUserId = localStorage.getItem('userId');
     const usuario = localStorage.getItem('usuario');
 
+    // Debugging for redirection
+    console.log('DOMContentLoaded: Checking login status.');
+    console.log('Usuario:', usuario, 'UserID:', window.loggedInUserId);
+
     // Redirect if not logged in (applies to both index.html and xp_shop.html)
-    if (!usuario || !loggedInUserId) {
+    if (!usuario || !window.loggedInUserId) {
+        console.warn('User not logged in or session expired. Redirecting to auth page.');
         // IMPORTANT: Replace alert() with a custom modal for better UX
         alert('Tenés que iniciar sesión primero.');
         window.location.href = 'auth_interface.html'; // Assuming auth_interface.html is your login page
@@ -411,11 +406,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Always fetch user data to update XP bubble and check login status
     await fetchUserDataCommon(); // Use a common fetch function
 
-    // Determine if it's the Pomodoro page and initialize
+    // Determine if it's the Pomodoro page and initialize its specific features
     if (document.getElementById('timer-display')) { // Check for a unique element on index.html
         initializePomodoroPage();
     }
-    // xp_shop.js will handle its own page-specific initialization
+    // xp_shop.js will handle its own page-specific initialization after this script runs
 });
 
 
@@ -425,27 +420,41 @@ async function fetchUserDataCommon() {
     const userId = localStorage.getItem('userId');
     if (!userId) {
         console.error('No user ID found in localStorage for common fetch.');
-        return;
+        return null; // Return null if no userId
     }
 
     try {
         const response = await fetch(`${window.backendBaseUrl}/api/user/data?userId=${userId}`);
         if (response.ok) {
             const data = await response.json();
-            xp = data.xp; // Update global XP
-            totalPomodoroMinutes = data.total_pomodoro_minutes; // Also update for index.html
-            weeklyStudyGoals = data.weekly_goal; // Also update for index.html
-            lastResetDate = new Date(data.last_reset_date); // Also update for index.html
+            window.xp = data.xp; // Update global XP
+            window.totalPomodoroMinutes = data.total_pomodoro_minutes; // Also update for index.html
+            window.weeklyStudyGoals = data.weekly_goal; // Also update for index.html
+            window.lastResetDate = new Date(data.last_reset_date); // Also update for index.html
 
             if (xpBubble) {
-                xpBubble.textContent = `XP: ${xp}`;
+                xpBubble.textContent = `XP: ${window.xp}`;
             }
+            console.log('fetchUserDataCommon: User data fetched successfully.');
             return data; // Return data for page-specific use
         } else {
             console.error('Failed to fetch user data in common fetch:', response.status, response.statusText);
+            // If fetching fails, clear local storage and redirect to login, as data is inconsistent
+            if (response.status === 404 || response.status === 401) {
+                console.warn('User data fetch failed with 401/404. Clearing session and redirecting.');
+                localStorage.removeItem('usuario');
+                localStorage.removeItem('userId');
+                alert('Tu sesión ha expirado o es inválida. Inicia sesión de nuevo.'); // Inform user
+                window.location.href = 'auth_interface.html';
+            }
         }
     } catch (error) {
         console.error('Error fetching user data in common fetch:', error);
+        // Catch network errors etc. and potentially redirect
+        alert('Error de conexión al servidor. Por favor, intenta de nuevo.'); // Inform user
+        localStorage.removeItem('usuario'); // Clear session on network error too
+        localStorage.removeItem('userId');
+        window.location.href = 'auth_interface.html';
     }
     return null;
 }
