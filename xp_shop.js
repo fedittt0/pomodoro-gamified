@@ -29,12 +29,15 @@ function updateXPBubble() {
 function showModal(modalElement) {
     if (modalElement) {
         modalElement.style.display = 'flex';
+        // Add a class for animation if desired (needs CSS for .modal.show)
+        // modalElement.classList.add('show');
     }
 }
 
 function hideModal(modalElement) {
     if (modalElement) {
         modalElement.style.display = 'none';
+        // modalElement.classList.remove('show');
     }
 }
 
@@ -124,6 +127,8 @@ async function purchaseReward(rewardId, cost) {
         return;
     }
 
+    // IMPORTANT: Replace confirm() with a custom modal for better UX and consistency
+    // For now, keeping confirm() as it was in the original file
     if (!confirm(`¿Estás seguro de que quieres comprar esta recompensa por ${cost} XP?`)) {
         return;
     }
@@ -140,8 +145,6 @@ async function purchaseReward(rewardId, cost) {
             xp = data.newXp; // Update global XP
             updateXPBubble(); // Update XP bubble
             alert(`¡Recompensa comprada con éxito! Tu nuevo XP es: ${xp}`);
-            // Optionally, you might want to hide/disable the purchased item
-            // or refresh the rewards list if purchasing is a one-time thing.
             fetchRewards(); // Refresh rewards to update button states (disabled if not enough XP)
         } else {
             const errorData = await response.json();
@@ -216,9 +219,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchRewards(); // Load rewards
 });
 
-// Logout function (re-defined here for xp_shop.html, or could be in a shared script)
-function logoutUsuario() {
-    localStorage.removeItem('usuario');
-    localStorage.removeItem('userId');
-    window.location.href = 'auth_interface.html';
-}
+// REMOVED: Duplicative logoutUsuario function.
+// It's already defined in script.js and loaded before this script.
+// function logoutUsuario() {
+//     localStorage.removeItem('usuario');
+//     localStorage.removeItem('userId');
+//     window.location.href = 'auth_interface.html';
+// }

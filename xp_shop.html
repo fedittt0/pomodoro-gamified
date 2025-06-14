@@ -14,6 +14,8 @@
       <ul class="menu" role="menubar">
         <li role="none"><a role="menuitem" href="xp_shop.html" tabindex="0">Tienda XP</a></li>
         <li role="none"><a role="menuitem" href="#" tabindex="0">Amigos</a></li>
+        <!-- NEW: Logout button for XP Shop -->
+        <li role="none"><a role="menuitem" href="#" onclick="logoutUsuario()">Salir</a></li>
       </ul>
       <div id="xp-bubble" class="xp-bubble" aria-label="Current Experience Points">XP: 0</div>
     </div>
@@ -60,6 +62,7 @@
   </div>
 
 
+  <script src="script.js"></script> <!-- Load script.js first for shared functions -->
   <script src="xp_shop.js"></script>
-  <script src="script.js"></script> </body>
+</body>
 </html>
